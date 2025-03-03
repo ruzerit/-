@@ -1,13 +1,28 @@
 // ✅ 전역 변수 선언
 let currentGalleryIndex = 0;  
 let currentGallery2Index = 0; 
-let galleryModal, galleryImage, galleryContainer, galleryItems;
-let gallery2Images, gallery2Modal, gallery2Image, gallery2Filename;
-let isDown = false;
-let startX, startScrollLeft;
-let scrollTimer;
 
+// 갤러리 1 관련 변수
+let galleryModal = null;
+let galleryImage = null;
+let galleryContainer = null;
+let galleryItems = []; // 배열 초기화 (undefined 방지)
+
+// 갤러리 2 관련 변수
+let gallery2Images = [];
+let gallery2Modal = null;
+let gallery2Image = null;
+let gallery2Filename = null;
+
+// 스크롤 및 드래그 관련 변수
+let isDown = false;
+let startX = 0;
+let startScrollLeft = 0;
+let scrollTimer = null;
+
+// ✅ DOMContentLoaded 이벤트 리스너 
 document.addEventListener("DOMContentLoaded", function () {
+    // ✅ 요소 가져오기
     galleryModal = document.getElementById("galleryModal");
     galleryImage = document.getElementById("galleryImage");
     galleryItems = document.querySelectorAll(".gallery-item img");
@@ -29,23 +44,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (compCardBtn) compCardBtn.addEventListener("click", () => openModal("modalCompCard"));
     if (videoCheckBtn) videoCheckBtn.addEventListener("click", () => openModal("modalVideoCheck"));
-    
-    requestAnimationFrame(() => {
-        if (galleryContainer && galleryItems.length > 1) {
-            let initialIndex = 1;
-            let containerCenter = galleryContainer.clientWidth / 2;
-            let selectedItem = galleryItems[initialIndex];
-
-            galleryContainer.scrollLeft = selectedItem.offsetLeft - containerCenter + selectedItem.offsetWidth / 2;
-            updateCenterImage();
-        }
-    });
 
     if (gallery2Images && gallery2Images.length > 0) {
         gallery2Images.forEach((img, index) => {
-            setTimeout(() => {
-                img.parentElement.classList.add("visible");
-            }, 500);
+            img.parentElement.classList.add("visible");
             img.addEventListener("click", () => openGallery2Modal(index)); 
         });
     }
@@ -65,6 +67,24 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
     
+    requestAnimationFrame(() => {
+        if (galleryContainer && galleryItems.length > 0) {
+            let containerCenter = galleryContainer.clientWidth / 2;
+            let selectedItemIndex = Math.floor(galleryItems.length / 2);
+            let selectedItem = galleryItems[selectedItemIndex];
+
+            let itemCenter = selectedItem.offsetLeft + (selectedItem.offsetWidth / 2);
+            let scrollTo = itemCenter - containerCenter;
+
+            galleryContainer.scrollTo({
+                left: scrollTo,
+                behavior: "smooth"
+            });
+
+            updateCenterImage();
+        }
+    });
+
     document.querySelectorAll(".modal .close").forEach((btn) => {
         btn.addEventListener("click", () => {
             const modal = btn.closest(".modal");
@@ -98,8 +118,6 @@ document.addEventListener("DOMContentLoaded", function () {
             startScrollLeft = galleryContainer.scrollLeft;
         });
 
-        galleryContainer.addEventListener("mouseleave", () => isDown = false);
-        galleryContainer.addEventListener("mouseup", () => isDown = false);
         galleryContainer.addEventListener("mousemove", (e) => {
             if (!isDown) return;
             e.preventDefault();
@@ -108,13 +126,16 @@ document.addEventListener("DOMContentLoaded", function () {
             galleryContainer.scrollLeft = startScrollLeft - walk;
         });
 
+        ["mouseup", "mouseleave", "touchend"].forEach(evt =>
+            galleryContainer.addEventListener(evt, () => isDown = false)
+        );
+
         galleryContainer.addEventListener("touchstart", (e) => {
             isDown = true;
             startX = e.touches[0].pageX - galleryContainer.offsetLeft;
             startScrollLeft = galleryContainer.scrollLeft;
         });
 
-        galleryContainer.addEventListener("touchend", () => isDown = false);
         galleryContainer.addEventListener("touchmove", (e) => {
             if (!isDown) return;
             e.preventDefault();
@@ -235,14 +256,6 @@ function nextGalleryImage() {
     }
 }
 
-function openGallery2Modal(index) {
-    if (!gallery2Images || !gallery2Images.length) return;
-    currentGallery2Index = index;
-    updateGallery2Modal();
-    openModal("gallery2Modal");
-}
-
-// ✅ 갤러리2 모달 열기 기능 
 function openGallery2Modal(index) {
     if (!gallery2Images || !gallery2Images.length) return;
     currentGallery2Index = index;
