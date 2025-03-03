@@ -87,8 +87,8 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
-    width: 100vw; /* 전체 너비 */
-    gap: 0; /* 빈틈 제거 */
+    width: 100vw; 
+    gap: 0;
     padding: 0;
     margin: 0;
 }
@@ -100,6 +100,7 @@ body {
     align-items: center;
     justify-content: center;
     width: 100%;
+    height: 400px;
     overflow: hidden;
     padding: 0;
     margin: 0;
@@ -110,11 +111,11 @@ body {
 
 .gallery2-item img {
     width: 100%; /* 부모 컨테이너에 맞춤 */
-    height: auto; /* 원본 비율 유지 */
+    height: 100%; /* 원본 비율 유지 */
     object-fit: cover; /* 빈틈 없이 꽉 채움 */
     cursor: pointer;
     display: block; /* 이미지 사이 공백 제거 */
-    aspect-ratio: auto; /* 원본 비율 유지 (최신 브라우저 지원) */
+    aspect-ratio: 3/4; /* 원본 비율 유지 (최신 브라우저 지원) */
 }
 
 .gallery2-item.visible {
