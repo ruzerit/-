@@ -1,10 +1,3 @@
-// ✅ 전역 변수 선언
-let currentGalleryIndex = 0;
-let currentGallery2Index = 0;
-let isDown = false;
-let startX, startScrollLeft;
-let scrollTimer;
-
 // ✅ DOMContentLoaded 이벤트 리스너 
 document.addEventListener("DOMContentLoaded", function () {
     const galleryModal = document.getElementById("galleryModal");
