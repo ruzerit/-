@@ -8,6 +8,43 @@ body {
         .container { width: 80%; margin: auto; text-align: center; 
 }
 
+.gallery2-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100vw; /* 전체 너비 */
+    gap: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.gallery2-item {
+    flex: 1 1 calc(100vw / 3); /* 한 줄에 3개씩 배치 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    opacity: 1; 
+    transform: translateY(50px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.gallery2-item img {
+    width: 100%; /* 부모 컨테이너 크기에 맞게 */
+    height: auto; /* 원본 비율 유지하면서 크기 조절 */
+    object-fit: cover; /* 빈 공간 없이 꽉 채우기 */
+    cursor: pointer;
+    display: block; /* 이미지 사이 공백 제거 */
+}
+
+.gallery2-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .cover {
     position: relative;
     width: 100%;
@@ -242,40 +279,6 @@ body {
     text-align: center;
     font-size: 18px;
     margin: 20px 0;
-}
-
-.gallery2-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0px;
-    padding: 0;
-    justify-content: center;
-    align-items: flex-start;
-}
-
-.gallery2-item {
-    flex: 1 1 calc(33.333% - 10px); /* 한 줄에 3개 배치 */
-    max-width: calc(33.333% - 10px);
-    height: 300px; /* 세로 높이 일정 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    opacity: 1; 
-    transform: translateY(50px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-
-.gallery2-item img {
-    width: auto; /* 가로 크기 자동 */
-    height: 100%; /* 세로 크기 일정하게 맞춤 */
-    object-fit: contain; /* 원본 비율 유지하면서 맞추기 */
-    cursor: pointer;
-}
-
-.gallery2-item.visible {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 #gallery2Modal {
