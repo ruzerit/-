@@ -354,6 +354,7 @@ body {
 
     .gallery2-item {
         flex-basis: calc(100vw / 2); /* ✅ 한 줄에 2개 */
+        height: 400px;
     }
 
     .model-info {
