@@ -1,7 +1,8 @@
 // ✅ 전역 변수 선언
 let currentGalleryIndex = 0;  
 let currentGallery2Index = 0; 
-let galleryModal, galleryImage, gallery2Modal, gallery2Image, gallery2Filename, galleryContainer, galleryItems, gallery2Images;
+let galleryModal, galleryImage, galleryContainer, galleryItems;
+let gallery2Images, gallery2Modal, gallery2Image, gallery2Filename;
 let isDown = false;
 let startX, startScrollLeft;
 let scrollTimer;
@@ -16,8 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     galleryContainer = document.querySelector(".gallery-container");
     galleryItems = document.querySelectorAll(".gallery-item img");
-    gallery2Items = document.querySelectorAll(".gallery2-item");
     gallery2Images = document.querySelectorAll(".gallery2-item img");
+
     const darkModeToggle = document.getElementById("darkModeToggle");
     const modals = document.querySelectorAll(".modal");
 
@@ -43,8 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ 갤러리2(.gallery2-item) 표시 & 클릭 이벤트 추가
     if (gallery2Images && gallery2Images.length > 0) {
         gallery2Images.forEach((img, index) => {
-            img.parentElement.classList.add("visible");
-            img.addEventListener("click", () => openGallery2Modal(index));
+            img.parentElement.classList.add("visible"); 
+            img.addEventListener("click", () => openGallery2Modal(index)); 
         });
     }
 
@@ -54,58 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
             openGalleryModal(this);
         });
     });
-
-    // 초기 갤러리 정렬 실행
-    requestAnimationFrame(() => {
-        if (galleryContainer && galleryItems.length > 1) {
-            let initialIndex = 1;
-            let containerCenter = galleryContainer.clientWidth / 2;
-            let selectedItem = galleryItems[initialIndex];
-
-            galleryContainer.scrollLeft = selectedItem.offsetLeft - containerCenter + selectedItem.offsetWidth / 2;
-            updateCenterImage();
-        }
-    });
-
-    if (galleryContainer) {
-        galleryContainer.addEventListener("scroll", () => {
-            clearTimeout(scrollTimer);
-            scrollTimer = setTimeout(updateCenterImage, 200);
-        });
-
-        galleryContainer.addEventListener("mousedown", (e) => {
-            isDown = true;
-            startX = e.pageX - galleryContainer.offsetLeft;
-            startScrollLeft = galleryContainer.scrollLeft;
-        });
-
-        galleryContainer.addEventListener("mouseleave", () => isDown = false);
-        galleryContainer.addEventListener("mouseup", () => isDown = false);
-        galleryContainer.addEventListener("mousemove", (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            let x = e.pageX - galleryContainer.offsetLeft;
-            let walk = (x - startX) * 2;
-            galleryContainer.scrollLeft = startScrollLeft - walk;
-        });
-    }
-        // ✅ 모바일 터치 스크롤 추가
-        galleryContainer.addEventListener("touchstart", (e) => {
-            isDown = true;
-            startX = e.touches[0].pageX - galleryContainer.offsetLeft;
-            startScrollLeft = galleryContainer.scrollLeft;
-        });
-
-        galleryContainer.addEventListener("touchend", () => isDown = false);
-        galleryContainer.addEventListener("touchmove", (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            let x = e.touches[0].pageX - galleryContainer.offsetLeft;
-            let walk = (x - startX) * 2;
-            galleryContainer.scrollLeft = startScrollLeft - walk;
-        });
-    }
-
     // ✅ 다크 모드 설정
     if (localStorage.getItem("darkMode") === "enabled") {
         document.body.classList.add("dark-mode");
@@ -147,6 +96,58 @@ document.addEventListener("DOMContentLoaded", function () {
             if (event.target === modal) closeModal(modal.id);
         });
     });
+
+
+    // 초기 갤러리 정렬 실행
+    requestAnimationFrame(() => {
+        if (galleryContainer && galleryItems.length > 1) {
+            let initialIndex = 1;
+            let containerCenter = galleryContainer.clientWidth / 2;
+            let selectedItem = galleryItems[initialIndex];
+
+            galleryContainer.scrollLeft = selectedItem.offsetLeft - containerCenter + selectedItem.offsetWidth / 2;
+            updateCenterImage();
+        }
+    });
+
+    if (galleryContainer) {
+        galleryContainer.addEventListener("scroll", () => {
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(updateCenterImage, 200);
+        });
+
+        galleryContainer.addEventListener("mousedown", (e) => {
+            isDown = true;
+            startX = e.pageX - galleryContainer.offsetLeft;
+            startScrollLeft = galleryContainer.scrollLeft;
+        });
+
+        galleryContainer.addEventListener("mouseleave", () => isDown = false);
+        galleryContainer.addEventListener("mouseup", () => isDown = false);
+        galleryContainer.addEventListener("mousemove", (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            let x = e.pageX - galleryContainer.offsetLeft;
+            let walk = (x - startX) * 2;
+            galleryContainer.scrollLeft = startScrollLeft - walk;
+        });
+
+        // ✅ 모바일 터치 스크롤 추가
+        galleryContainer.addEventListener("touchstart", (e) => {
+            isDown = true;
+            startX = e.touches[0].pageX - galleryContainer.offsetLeft;
+            startScrollLeft = galleryContainer.scrollLeft;
+        });
+
+        galleryContainer.addEventListener("touchend", () => isDown = false);
+        galleryContainer.addEventListener("touchmove", (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            let x = e.touches[0].pageX - galleryContainer.offsetLeft;
+            let walk = (x - startX) * 2;
+            galleryContainer.scrollLeft = startScrollLeft - walk;
+        });
+    }
 });
 
 // ✅ 모달 열기 함수 (전역)
@@ -254,15 +255,41 @@ function openGallery2Modal(index) {
     openModal("gallery2Modal");
 }
 
-// ✅ 갤러리2 모달 업데이트 (전역)
+// ✅ 갤러리2 모달 열기 기능 (🔴 **중복된 함수 제거 후 한 번만 선언**)
+function openGallery2Modal(index) {
+    if (!gallery2Images || !gallery2Images.length) return;
+    currentGallery2Index = index;
+
+    if (!gallery2Images[currentGallery2Index]) return;
+
+    updateGallery2Modal(); // ✅ **중복 제거 후, 함수로 이동**
+
+    gallery2Modal.style.display = "flex";
+    setTimeout(() => {
+        gallery2Modal.style.opacity = "1";
+        gallery2Modal.style.visibility = "visible";
+    }, 50);
+}
+
+// 갤러리2 모달 닫기 기능 추가**
+function closeGallery2Modal() {
+    if (!gallery2Modal) return;
+    gallery2Modal.style.opacity = "0";
+    gallery2Modal.style.visibility = "hidden";
+    setTimeout(() => { gallery2Modal.style.display = "none"; }, 300);
+}
+
+// 갤러리2 이미지 업데이트 함수 추가
 function updateGallery2Modal() {
     if (!gallery2Image || !gallery2Filename) return;
+    if (!gallery2Images[currentGallery2Index]) return;
+
     const imgEl = gallery2Images[currentGallery2Index];
     gallery2Image.src = imgEl.src;
     gallery2Filename.innerText = imgEl.parentElement.dataset.filename || "";
 }
 
-// ✅ 이전/다음 이미지 이동 (전역)
+// 갤러리2 이전/다음 버튼 동작 추가
 function prevGallery2Image() {
     if (currentGallery2Index > 0) {
         currentGallery2Index--;
