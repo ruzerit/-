@@ -1,25 +1,136 @@
-/* ✅ 기본 스타일 */
 body {
-    font-family: 'Helvetica', Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f8f8f8;
-    color: #333;
-    transition: background 0.4s ease-in-out, color 0.4s ease-in-out;
-}
+    font-family: 'Helvetica', Arial, sans-serif; 
+    margin: 0;    
+    padding: 0; 
+    background: #f8f8f8; 
+    color: #333; 
+    transition: background 0.5s, color 0.5s; }
 
-/* ✅ 컨테이너 중앙 정렬 */
 .container {
     width: 80%;
     margin: auto;
     text-align: center;
 }
 
-/* ✅ 커버 스타일 */
+.gallery {
+    position: relative;
+    width: 100%;
+    min-height: 40px;
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.gallery-item {
+    max-width: 250px;
+    aspect-ratio: 3/4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    position: relative;
+    z-index: 1;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.gallery-item.active {
+    transform: scale(1.2);
+    opacity: 1;
+    z-index: 10;
+    aspect-ratio: 3 / 4;
+    transition: transform 0.4s ease-in-out, opacity 0.4s ease-out;
+}
+
+.gallery-item.active img{
+    object-fit: contain;
+    max-width: 280px;
+    max-height: 100%;
+}
+
+.gallery-item:not(.active) {
+    transform: scale(0.85);
+    opacity: 0.6;
+    transition: transform 0.4s ease-in-out, opacity 0.4s ease-out;
+}
+
+/* ✅ 갤러리 컨테이너 최적화 */
+.gallery-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    gap: 10px;
+    padding: 0 5vw;
+    align-items: center;
+    justify-content: center;
+    height: 450px;
+    max-width: 100vw;
+    position: relative;
+}
+
+.gallery-container::-webkit-scrollbar {
+    display: none;
+}
+
+.gallery2-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100vw; /* 전체 너비 */
+    gap: 0; /* 빈틈 제거 */
+    padding: 0;
+    margin: 0;
+}
+
+.gallery2-item {
+    flex-grow: 1; /* 가변 크기 */
+    flex-basis: calc(100vw / 3); /* 한 줄에 3개 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    opacity: 0; 
+    transform: translateY(50px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.gallery2-item img {
+    width: 100%; /* 부모 컨테이너에 맞춤 */
+    height: auto; /* 원본 비율 유지 */
+    object-fit: cover; /* 빈틈 없이 꽉 채움 */
+    cursor: pointer;
+    display: block; /* 이미지 사이 공백 제거 */
+    aspect-ratio: auto; /* 원본 비율 유지 (최신 브라우저 지원) */
+}
+
+.gallery2-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#gallery2Filename {
+    color: #fff;
+    margin-top: 10px;
+}
+
 .cover {
     position: relative;
     width: 100%;
-    height: 56.25vw; /* 16:9 비율 유지 */
+    height: 56.25vw;
     max-height: 80vh;
     display: flex;
     flex-direction: column;
@@ -31,18 +142,24 @@ body {
 }
 
 .cover picture {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -2;
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     z-index: -2;
 }
 
 .cover img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.cover-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
 }
 
 .cover h1 {
@@ -88,135 +205,49 @@ body {
     background: rgba(255, 255, 255, 0.5);
 }
 
-/* ✅ 갤러리 컨테이너 (가로 슬라이드) */
-.gallery-container {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
-    gap: 10px;
-    padding: 0 5vw;
-    align-items: center;
-    justify-content: center;
-    height: 450px;
-    max-width: 100vw;
-    position: relative;
-}
-
-.gallery-container::-webkit-scrollbar {
-    display: none;
-}
-
-/* ✅ 갤러리 아이템 */
-.gallery-item {
-    max-width: 250px;
-    aspect-ratio: 3 / 4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    flex: 0 0 auto;
-    scroll-snap-align: center;
-    transition: transform 0.4s ease-in-out, opacity 0.4s ease-out;
-    position: relative;
-    z-index: 1;
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.gallery-item.active {
-    transform: scale(1.2);
-    opacity: 1;
-    z-index: 10;
-}
-
-.gallery-item.active img {
-    object-fit: contain;
-    max-width: 280px;
-    max-height: 100%;
-}
-
-.gallery-item:not(.active) {
-    transform: scale(0.85);
-    opacity: 0.6;
-}
-
-/* ✅ 갤러리 2 (격자형) */
-.gallery2-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-    width: 100vw;
-    gap: 0;
-    padding: 0;
-    margin: 0;
-}
-
-.gallery2-item {
-    flex-grow: 1;
-    flex-basis: calc(100vw / 3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-    opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-
-.gallery2-item img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    cursor: pointer;
-}
-
-.gallery2-item.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* ✅ 모달 스타일 */
+/* ✅ 모달 스타일 최적화 (프레임 및 배경 제거) */
 .modal {
     position: fixed;
-    top: 50%;
+    top: 50%; 
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
     max-width: 800px;
     padding: 20px;
+    opacity: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background: none;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease;
     z-index: 1000;
 }
 
 .modal.show {
+    display: flex !important;
     opacity: 1;
+    visibility: visible;
 }
 
-/* ✅ 모달 이미지 및 비디오 */
+.modal-content {
+    position: relative;
+    max-width: 100%;
+    max-height: 90vh;
+    background: none;
+    box-shadow: none;
+    text-align: center;
+}
+
+/* ✅ 비디오 및 이미지 모달 최적화 */
 .modal img, .modal video {
     max-width: 90vw;
     max-height: 85vh;
     object-fit: contain;
+    background: none;
 }
 
-/* ✅ 모달 닫기 버튼 */
+/* ✅ 닫기 버튼 스타일 */
 .close {
     position: absolute;
     top: 20px;
@@ -228,7 +259,7 @@ body {
     border: none;
 }
 
-/* ✅ 모달 네비게이션 버튼 */
+/* ✅ 모달 화살표 버튼 스타일 추가 */
 .modal .prev, .modal .next {
     position: absolute;
     top: 50%;
@@ -249,26 +280,37 @@ body {
 .modal .prev { left: 10px; }
 .modal .next { right: 10px; }
 
-/* ✅ 모델 정보 */
 .model-info {
     text-align: center;
     font-size: 18px;
     margin: 20px 0;
 }
 
-/* ✅ 컨택 섹션 */
 .contact {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
-    margin-top: 30px;
+    margin-top: 30px
 }
 
-/* ✅ 어바웃 섹션 */
+.contact a {
+    color: inherit;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contact a:hover {
+    text-decoration: underline;
+}
+
 .about img {
     width: 100%;
-    max-width: 600px;
+    max-width: 600px; 
     aspect-ratio: 3 / 4;
-    object-fit: cover;
+    object-fit: cover; 
     display: block;
     margin: 0 auto;
 }
@@ -281,12 +323,25 @@ body {
     }
 
     .cover {
-        height: 50vh;
-        max-height: 450px;
+       height: 50vh; 
+       max-height: 450px;
+       background-position: 50% 50%;
+    }
+    
+    .cover h1 {
+       font-size: 22px;
+       margin-bottom: 20px;
     }
 
-    .cover h1 {
-        font-size: 22px;
+    .modal {
+        width: 95vw;
+        max-width: 500px;
+        padding: 15px;
+    }
+
+    .modal .prev, .modal .next {
+        padding: 8px 14px;
+        font-size: 20px;
     }
 
     .gallery-container {
@@ -298,11 +353,31 @@ body {
     }
 
     .model-info {
-        font-size: 14px;
-    }
+        font-size: 14px; 
+        padding: 7px 9px;
+}
+
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 /* ✅ 다크 모드 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212;
+        color: #ffffff;
+    }
+
+    .modal {
+        background: none;
+    }
+
+    .gallery-container {
+        background-color: #1a1a1a;
+    }
+}
+
 .dark-mode body {
     background-color: #121212;
     color: #ffffff;
