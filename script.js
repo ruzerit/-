@@ -8,30 +8,37 @@ let startX, startScrollLeft;
 let scrollTimer;
 
 document.addEventListener("DOMContentLoaded", function () {
-    // ✅ 요소 가져오기
     galleryModal = document.getElementById("galleryModal");
     galleryImage = document.getElementById("galleryImage");
-    gallery2Modal = document.getElementById("gallery2Modal");
-    gallery2Image = document.getElementById("gallery2Image");
-    gallery2Filename = document.getElementById("gallery2Filename");
-
-    galleryContainer = document.querySelector(".gallery-container");
     galleryItems = document.querySelectorAll(".gallery-item img");
+    gallery2Modal = document.getElementById("gallery2Modal");
     gallery2Images = document.querySelectorAll(".gallery2-item img");
+    gallery2Filename = document.getElementById("gallery2Filename");
+    galleryContainer = document.querySelector(".gallery-container");
 
     const darkModeToggle = document.getElementById("darkModeToggle");
     const modals = document.querySelectorAll(".modal");
+    const videoElement = document.querySelector("video");
+    if (videoElement) {
+        videoElement.removeAttribute("autoplay");
+        videoElement.pause();
+    }
 
     const compCardBtn = document.getElementById("compCardBtn");
     const videoCheckBtn = document.getElementById("videoCheckBtn");
 
     if (compCardBtn) compCardBtn.addEventListener("click", () => openModal("modalCompCard"));
     if (videoCheckBtn) videoCheckBtn.addEventListener("click", () => openModal("modalVideoCheck"));
+    
+    requestAnimationFrame(() => {
+        if (galleryContainer && galleryItems.length > 1) {
+            let initialIndex = 1;
+            let containerCenter = galleryContainer.clientWidth / 2;
+            let selectedItem = galleryItems[initialIndex];
 
-    modals.forEach(modal => {
-        modal.style.display = "none";
-        modal.style.opacity = "0";
-        modal.style.visibility = "hidden";
+            galleryContainer.scrollLeft = selectedItem.offsetLeft - containerCenter + selectedItem.offsetWidth / 2;
+            updateCenterImage();
+        }
     });
 
     if (gallery2Images && gallery2Images.length > 0) {
@@ -43,14 +50,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ✅ 갤러리1(.gallery-item) 클릭 이벤트 추가
     galleryItems.forEach((img) => {
         img.addEventListener("click", function () {
             openGalleryModal(this);
         });
     });
 
-    // ✅ 모달 닫기 버튼 이벤트
+    modals.forEach(modal => {
+        modal.style.display = "none";
+        modal.style.opacity = "0";
+        modal.style.visibility = "hidden";
+        modal.addEventListener("click", (event) => {
+            if (event.target === modal) closeModal(modal.id);
+        });
+    });
+    
     document.querySelectorAll(".modal .close").forEach((btn) => {
         btn.addEventListener("click", () => {
             const modal = btn.closest(".modal");
@@ -58,7 +72,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // ✅ ESC 키 & 화살표 키 이벤트
     document.addEventListener("keydown", (event) => {
         switch (event.key) {
             case "Escape":
@@ -72,45 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
         }
     });
-
-    // ✅ 모달 외부 클릭 시 닫기
-    modals.forEach((modal) => {
-        modal.addEventListener("click", (event) => {
-            if (event.target === modal) closeModal(modal.id);
-        });
-    });
-
-    // ✅ 비디오 자동 재생 방지
-    const videoElement = document.querySelector("video");
-    if (videoElement) {
-        videoElement.removeAttribute("autoplay");
-        videoElement.pause();
-    }
-
-    // ✅ 다크 모드 설정
-    if (localStorage.getItem("darkMode") === "enabled") {
-        document.body.classList.add("dark-mode");
-    }
-
-    if (darkModeToggle) {
-        darkModeToggle.addEventListener("click", function () {
-            document.body.classList.toggle("dark-mode");
-            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
-        });
-    }
-
-    // 초기 갤러리 정렬 실행
-    requestAnimationFrame(() => {
-        if (galleryContainer && galleryItems.length > 1) {
-            let initialIndex = 1;
-            let containerCenter = galleryContainer.clientWidth / 2;
-            let selectedItem = galleryItems[initialIndex];
-
-            galleryContainer.scrollLeft = selectedItem.offsetLeft - containerCenter + selectedItem.offsetWidth / 2;
-            updateCenterImage();
-        }
-    });
-
+  
     if (galleryContainer) {
         galleryContainer.addEventListener("scroll", () => {
             clearTimeout(scrollTimer);
@@ -133,7 +108,6 @@ document.addEventListener("DOMContentLoaded", function () {
             galleryContainer.scrollLeft = startScrollLeft - walk;
         });
 
-        // ✅ 모바일 터치 스크롤 추가
         galleryContainer.addEventListener("touchstart", (e) => {
             isDown = true;
             startX = e.touches[0].pageX - galleryContainer.offsetLeft;
@@ -147,6 +121,18 @@ document.addEventListener("DOMContentLoaded", function () {
             let x = e.touches[0].pageX - galleryContainer.offsetLeft;
             let walk = (x - startX) * 2;
             galleryContainer.scrollLeft = startScrollLeft - walk;
+        });
+    }
+
+    // ✅ 다크 모드 설정
+    if (localStorage.getItem("darkMode") === "enabled") {
+        document.body.classList.add("dark-mode");
+    }
+
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener("click", function () {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
         });
     }
 });
@@ -256,15 +242,15 @@ function openGallery2Modal(index) {
     openModal("gallery2Modal");
 }
 
-// ✅ 갤러리2 모달 열기 기능 (🔴 **중복된 함수 제거 후 한 번만 선언**)
+// ✅ 갤러리2 모달 열기 기능 
 function openGallery2Modal(index) {
     if (!gallery2Images || !gallery2Images.length) return;
     currentGallery2Index = index;
 
     if (!gallery2Images[currentGallery2Index]) return;
 
-    updateGallery2Modal(); // ✅ **중복 제거 후, 함수로 이동**
-
+    updateGallery2Modal();
+    
     gallery2Modal.style.display = "flex";
     setTimeout(() => {
         gallery2Modal.style.opacity = "1";
@@ -272,7 +258,7 @@ function openGallery2Modal(index) {
     }, 50);
 }
 
-// 갤러리2 모달 닫기 기능 추가**
+// 갤러리2 모달 닫기 기능 추가
 function closeGallery2Modal() {
     if (!gallery2Modal) return;
     gallery2Modal.style.opacity = "0";
