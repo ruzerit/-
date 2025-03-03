@@ -9,6 +9,8 @@ let scrollTimer;
 document.addEventListener("DOMContentLoaded", function () {
     // ✅ 요소 가져오기
     const galleryModal = document.getElementById("galleryModal");
+
+
     const galleryImage = document.getElementById("galleryImage");
     const gallery2Modal = document.getElementById("gallery2Modal");
     const galleryItems = document.querySelectorAll(".gallery-item img");
@@ -21,10 +23,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const videoElement = document.querySelector("video");
 
     const compCardBtn = document.getElementById("compCardBtn");
-    const videoCheckBtn = document.getElementById("videoCheckBtn");
-
-    // ✅ 버튼 이벤트 추가
     if (compCardBtn) compCardBtn.addEventListener("click", () => openModal("modalCompCard"));
+
+    const videoCheckBtn = document.getElementById("videoCheckBtn");
     if (videoCheckBtn) videoCheckBtn.addEventListener("click", () => openModal("modalVideoCheck"));
 
     // ✅ 갤러리1 클릭 이벤트 추가 (중앙 정렬 + 모달)
