@@ -1,3 +1,4 @@
+
 // ✅ 전역 변수 선언
 let currentGalleryIndex = 0;
 let currentGallery2Index = 0;
@@ -5,22 +6,18 @@ let isDown = false;
 let startX, startScrollLeft;
 let scrollTimer;
 
-// ✅ DOMContentLoaded 이벤트 리스너
 document.addEventListener("DOMContentLoaded", function () {
     // ✅ 요소 가져오기
     const galleryModal = document.getElementById("galleryModal");
-
-
-    const galleryImage = document.getElementById("galleryImage");
-    const gallery2Modal = document.getElementById("gallery2Modal");
     const galleryItems = document.querySelectorAll(".gallery-item img");
+    const galleryImage = document.getElementById("galleryImage");
+
+    const gallery2Modal = document.getElementById("gallery2Modal");
     const gallery2Images = document.querySelectorAll(".gallery2-item img");
     const gallery2Filename = document.getElementById("gallery2Filename");
-    const galleryContainer = document.querySelector(".gallery-container");
 
+    const galleryContainer = document.querySelector(".gallery-container");
     const darkModeToggle = document.getElementById("darkModeToggle");
-    const modals = document.querySelectorAll(".modal");
-    const videoElement = document.querySelector("video");
 
     const compCardBtn = document.getElementById("compCardBtn");
     if (compCardBtn) compCardBtn.addEventListener("click", () => openModal("modalCompCard"));
@@ -28,40 +25,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const videoCheckBtn = document.getElementById("videoCheckBtn");
     if (videoCheckBtn) videoCheckBtn.addEventListener("click", () => openModal("modalVideoCheck"));
 
-    // ✅ 갤러리1 클릭 이벤트 추가 (중앙 정렬 + 모달)
+    // ✅ 갤러리1 클릭 이벤트 추가
     galleryItems.forEach((img, index) => {
         img.addEventListener("click", function () {
-            currentGalleryIndex = index;
-            updateGalleryModal();
-            openModal("galleryModal");
+            handleGalleryModal(1, index);
         });
     });
 
-    // ✅ 갤러리2 클릭 이벤트 추가 (파일명 표시 + 모달)
+    // ✅ 갤러리2 클릭 이벤트 추가
     gallery2Images.forEach((img, index) => {
         img.addEventListener("click", function () {
-            openGallery2Modal(index);
+            handleGalleryModal(2, index);
         });
-    });
-
-    // ✅ 모달 닫기 버튼 이벤트 추가
-    document.querySelectorAll(".modal .close").forEach((btn) => {
-        btn.addEventListener("click", () => closeModal(btn.closest(".modal").id));
-    });
-
-    // ✅ ESC 키 & 화살표 키 이벤트 추가
-    document.addEventListener("keydown", (event) => {
-        switch (event.key) {
-            case "Escape":
-                modals.forEach(modal => closeModal(modal.id));
-                break;
-            case "ArrowRight":
-                nextGalleryImage();
-                break;
-            case "ArrowLeft":
-                prevGalleryImage();
-                break;
-        }
     });
 
     // ✅ 갤러리 중앙 정렬 유지
@@ -129,11 +104,81 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// ✅ 범용 모달 처리 함수 (열기 & 업데이트)
+function handleGalleryModal(galleryType, index = null) {
+    let modal, images, filenameElement;
+
+    if (galleryType === 1) {
+        modal = document.getElementById("galleryModal");
+        images = document.querySelectorAll(".gallery-item img");
+    } else {
+        modal = document.getElementById("gallery2Modal");
+        images = document.querySelectorAll(".gallery2-item img");
+        filenameElement = document.getElementById("gallery2Filename");
+    }
+
+    if (!modal || images.length === 0) return;
+
+    // ✅ 새로 열린 경우 (index가 주어짐 → 모달 열기)
+    if (index !== null) {
+        if (index < 0 || index >= images.length) return;
+        if (galleryType === 1) {
+            currentGalleryIndex = index;
+        } else {
+            currentGallery2Index = index;
+        }
+        modal.style.display = "flex";
+    }
+
+    // ✅ 현재 인덱스 설정
+    let currentIndexVar = (galleryType === 1) ? currentGalleryIndex : currentGallery2Index;
+
+    // ✅ 갤러리2의 경우 파일명 업데이트
+    if (filenameElement) {
+        filenameElement.textContent = images[currentIndexVar].alt || "이미지";
+    }
+
+    // ✅ 이미지 업데이트
+    modal.querySelector("img").src = images[currentIndexVar].src;
+}
+
+// ✅ 범용 갤러리 이미지 변경 함수 (이전 & 다음)
+function changeGalleryImage(galleryType, direction) {
+    let images, currentIndexVar;
+
+    // ✅ 갤러리 설정
+    if (galleryType === 1) {
+        images = document.querySelectorAll(".gallery-item img");
+        currentIndexVar = currentGalleryIndex;
+    } else {
+        images = document.querySelectorAll(".gallery2-item img");
+        currentIndexVar = currentGallery2Index;
+    }
+
+    if (images.length === 0) return;
+
+    // ✅ 방향에 따라 인덱스를 증가 또는 감소
+    if (direction === "next") {
+        currentIndexVar = (currentIndexVar + 1) % images.length;
+    } else {
+        currentIndexVar = (currentIndexVar - 1 + images.length) % images.length;
+    }
+
+    // ✅ 현재 인덱스 업데이트
+    if (galleryType === 1) {
+        currentGalleryIndex = currentIndexVar;
+    } else {
+        currentGallery2Index = currentIndexVar;
+    }
+
+    // ✅ 변경된 인덱스로 모달 업데이트
+    handleGalleryModal(galleryType);
+}
+
 // ✅ 모달 열기 함수
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
-
     modal.style.display = "flex";
     requestAnimationFrame(() => {
         modal.style.opacity = "1";
@@ -145,38 +190,7 @@ function openModal(modalId) {
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
-
     modal.style.opacity = "0";
     modal.style.visibility = "hidden";
     setTimeout(() => { modal.style.display = "none"; }, 300);
-
-    if (modalId === "modalVideoCheck") {
-        const video = modal.querySelector("video");
-        if (video) video.pause();
-    }
-}
-
-// ✅ 갤러리2 모달 열기
-function openGallery2Modal(index) {
-    currentGallery2Index = index;
-    gallery2Modal.style.display = "flex";
-    gallery2Filename.textContent = gallery2Images[index].alt || "이미지";
-    gallery2Modal.querySelector("img").src = gallery2Images[index].src;
-}
-
-// ✅ 갤러리1 다음 이미지
-function nextGalleryImage() {
-    currentGalleryIndex = (currentGalleryIndex + 1) % galleryItems.length;
-    updateGalleryModal();
-}
-
-// ✅ 갤러리1 이전 이미지
-function prevGalleryImage() {
-    currentGalleryIndex = (currentGalleryIndex - 1 + galleryItems.length) % galleryItems.length;
-    updateGalleryModal();
-}
-
-// ✅ 갤러리1 모달 업데이트
-function updateGalleryModal() {
-    galleryImage.src = galleryItems[currentGalleryIndex].src;
 }
