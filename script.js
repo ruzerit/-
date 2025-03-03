@@ -1,49 +1,33 @@
 // ✅ 전역 변수 선언
-let currentGalleryIndex = 0;  
-let currentGallery2Index = 0; 
-
-// 갤러리 1 관련 변수
-let galleryModal = null;
-let galleryImage = null;
-let galleryContainer = null;
-let galleryItems = []; // 배열 초기화 (undefined 방지)
-
-// 갤러리 2 관련 변수
-let gallery2Images = [];
-let gallery2Modal = null;
-let gallery2Image = null;
-let gallery2Filename = null;
-
-// 스크롤 및 드래그 관련 변수
+let currentGalleryIndex = 0;
+let currentGallery2Index = 0;
 let isDown = false;
-let startX = 0;
-let startScrollLeft = 0;
-let scrollTimer = null;
+let startX, startScrollLeft;
+let scrollTimer;
 
 // ✅ DOMContentLoaded 이벤트 리스너 
 document.addEventListener("DOMContentLoaded", function () {
-    // ✅ 요소 가져오기
-    galleryModal = document.getElementById("galleryModal");
-    galleryImage = document.getElementById("galleryImage");
-    gallery2Modal = document.getElementById("gallery2Modal");
-    galleryItems = document.querySelectorAll(".gallery-item img");
-    gallery2Images = document.querySelectorAll(".gallery2-item img");
-    gallery2Filename = document.getElementById("gallery2Filename");
-    galleryContainer = document.querySelector(".gallery-container");
+    const galleryModal = document.getElementById("galleryModal");
+    const galleryImage = document.getElementById("galleryImage");
+    const gallery2Modal = document.getElementById("gallery2Modal");
+    const galleryItems = document.querySelectorAll(".gallery-item img");
+    const gallery2Images = document.querySelectorAll(".gallery2-item img");
+    const gallery2Filename = document.getElementById("gallery2Filename");
+    const galleryContainer = document.querySelector(".gallery-container");
 
     const darkModeToggle = document.getElementById("darkModeToggle");
     const modals = document.querySelectorAll(".modal");
     const videoElement = document.querySelector("video");
-    if (videoElement) {
-        videoElement.removeAttribute("autoplay");
-        videoElement.pause();
-    }
 
     const compCardBtn = document.getElementById("compCardBtn");
     const videoCheckBtn = document.getElementById("videoCheckBtn");
 
     if (compCardBtn) compCardBtn.addEventListener("click", () => openModal("modalCompCard"));
     if (videoCheckBtn) videoCheckBtn.addEventListener("click", () => openModal("modalVideoCheck"));
+    if (videoElement) {
+        videoElement.removeAttribute("autoplay");
+        videoElement.pause();
+    }
     if (!galleryContainer || galleryItems.length === 0) return;
     if (gallery2Images && gallery2Images.length > 0) {
         gallery2Images.forEach((img, index) => {
