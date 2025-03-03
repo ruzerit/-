@@ -1,167 +1,270 @@
-/* 기본 설정 */
+/* ✅ 기본 스타일 */
 body {
-
-    font-family: 'Helvetica', Arial, sans-serif; 
-    margin: 0;    
-    padding: 0; 
-    background: #f8f8f8; 
-    color: #333; 
-    transition: background 0.3s ease, color 0.3s ease;
+    font-family: 'Helvetica', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f8f8f8;
+    color: #333;
+    transition: background 0.4s ease-in-out, color 0.4s ease-in-out;
 }
 
+/* ✅ 컨테이너 중앙 정렬 */
 .container {
     width: 80%;
     margin: auto;
     text-align: center;
 }
 
-/* 다크 모드 자동 감지 */
-@media (prefers-color-scheme: dark) {
-    body {
-        background: #111;
-        color: #f8f8f8;
-    }
-}
-
-/* 📍 헤더 (커버 이미지) */
+/* ✅ 커버 스타일 */
 .cover {
     position: relative;
     width: 100%;
-    height: 56.25vw; /* 16:9 비율 */
-    max-height: 90vh;
-    background-size: cover;
-    background-position: center;
+    height: 56.25vw; /* 16:9 비율 유지 */
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    text-align: center;
+    padding-bottom: 50px;
+    overflow: hidden;
 }
 
-@media screen and (max-width: 768px) {
-    .cover {
-        height: 100vw; /* 모바일에서는 1:1 */
-    }
-}
-
-/* 📍 제목 */
-.cover-title {
+.cover picture {
     position: absolute;
-    bottom: 15%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: white;
-    text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.4);
-}
-
-@media screen and (max-width: 768px) {
-    .cover-title {
-        font-size: 1.8rem;
-    }
-}
-
-/* 📍 유도 버튼 */
-.buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.button {
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 20px;
-    color: white;
-    font-size: 1rem;
-    backdrop-filter: blur(10px);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.button:hover {
-    background: rgba(255, 255, 255, 0.6);
-    color: black;
-}
-
-@media screen and (max-width: 768px) {
-    .button {
-        font-size: 1.2rem;
-    }
-}
-
-/* 📍 갤러리 1 (가로 슬라이드) */
-.gallery-container {
-    overflow-x: auto;
-    white-space: nowrap;
-    padding: 20px 0;
-}
-
-.gallery {
-    display: flex;
-    gap: 10px;
-}
-
-.gallery img {
-    height: 300px;
-    object-fit: cover;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.gallery img.active {
-    transform: scale(1.1);
-    opacity: 1;
-}
-
-.gallery img:not(.active) {
-    opacity: 0.6;
-}
-
-/* 📍 갤러리 2 (격자형) */
-.grid-gallery {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-}
-
-.grid-gallery img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-/* 스크롤 시 이미지 나타남 */
-.grid-gallery img.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* 📍 모달 창 */
-.modal {
-    display: none;
-    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    justify-content: center;
-    align-items: center;
+    z-index: -2;
 }
 
-.modal img {
-    max-width: 90%;
-    max-height: 90vh;
+.cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ✅ 갤러리 컨테이너 (가로 슬라이드) */
+.gallery-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    gap: 10px;
+    padding: 0 5vw;
+    align-items: center;
+    justify-content: center;
+    height: 450px;
+    max-width: 100vw;
+    position: relative;
+}
+
+.gallery-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* ✅ 갤러리 아이템 */
+.gallery-item {
+    max-width: 250px;
+    aspect-ratio: 3 / 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    transition: transform 0.4s ease-in-out, opacity 0.4s ease-out;
+    position: relative;
+    z-index: 1;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gallery-item.active {
+    transform: scale(1.2);
+    opacity: 1;
+    z-index: 10;
+}
+
+.gallery-item.active img {
     object-fit: contain;
+    max-width: 280px;
+    max-height: 100%;
+}
+
+.gallery-item:not(.active) {
+    transform: scale(0.85);
+    opacity: 0.6;
+}
+
+/* ✅ 갤러리 2 (격자형) */
+.gallery2-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100vw;
+    gap: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.gallery2-item {
+    flex-grow: 1;
+    flex-basis: calc(100vw / 3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.gallery2-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.gallery2-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ✅ 모달 스타일 */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    max-width: 800px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 1000;
 }
 
 .modal.show {
-    display: flex;
+    opacity: 1;
 }
 
-/* 📍 컨택 / 어바웃 */
-.section {
+/* ✅ 모달 이미지 및 비디오 */
+.modal img, .modal video {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+}
+
+/* ✅ 모달 닫기 버튼 */
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #fff;
+    background: none;
+    border: none;
+}
+
+/* ✅ 모달 네비게이션 버튼 */
+.modal .prev, .modal .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-size: 24px;
+    transition: background 0.3s ease-in-out;
+}
+
+.modal .prev:hover, .modal .next:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.modal .prev { left: 10px; }
+.modal .next { right: 10px; }
+
+/* ✅ 모델 정보 */
+.model-info {
     text-align: center;
-    padding: 50px 20px;
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+/* ✅ 컨택 섹션 */
+.contact {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+/* ✅ 어바웃 섹션 */
+.about img {
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+}
+
+/* ✅ 반응형 디자인 (모바일 최적화) */
+@media (max-width: 768px) {
+    .modal img, .modal video {
+        max-width: 95vw;
+        max-height: 80vh;
+    }
+
+    .cover {
+        height: 50vh;
+        max-height: 450px;
+    }
+
+    .cover h1 {
+        font-size: 22px;
+    }
+
+    .gallery-container {
+        height: 350px;
+    }
+
+    .gallery-item {
+        max-width: 180px;
+    }
+
+    .model-info {
+        font-size: 14px;
+    }
+}
+
+/* ✅ 다크 모드 */
+.dark-mode body {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.dark-mode .modal {
+    background: none;
 }
