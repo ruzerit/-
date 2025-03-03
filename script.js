@@ -119,24 +119,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /* ✅ 3. 다크 모드 기능 추가 */
     const darkModeToggle = document.createElement("button");
-    darkModeToggle.textContent = "🌙 다크 모드";
     darkModeToggle.id = "darkModeToggle";
     document.body.appendChild(darkModeToggle);
 
-    function toggleDarkMode() {
-        document.body.classList.toggle("dark-mode");
-        const isDarkMode = document.body.classList.contains("dark-mode");
-        localStorage.setItem("darkMode", isDarkMode);
-        darkModeToggle.textContent = isDarkMode ? "☀️ 라이트 모드" : "🌙 다크 모드";
+    function updateDarkModeUI(isDark) {
+        document.body.classList.toggle("dark-mode", isDark);
+        darkModeToggle.textContent = isDark ? "☀️ 라이트 모드" : "🌙 다크 모드";
+        localStorage.setItem("darkMode", isDark);
     }
 
-    darkModeToggle.addEventListener("click", toggleDarkMode);
-
-    // 저장된 다크 모드 상태 유지
-    if (localStorage.getItem("darkMode") === "true") {
-        document.body.classList.add("dark-mode");
-        darkModeToggle.textContent = "☀️ 라이트 모드";
+    function detectSystemDarkMode() {
+        return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
     }
+
+    function loadDarkModeSetting() {
+        const savedDarkMode = localStorage.getItem("darkMode");
+        if (savedDarkMode === null) {
+            // 사용자가 설정하지 않았다면, 시스템 설정을 따른다.
+            updateDarkModeUI(detectSystemDarkMode());
+        } else {
+            // 저장된 설정 적용
+            updateDarkModeUI(savedDarkMode === "true");
+        }
+    }
+
+    darkModeToggle.addEventListener("click", function () {
+        const isDarkMode = !document.body.classList.contains("dark-mode");
+        updateDarkModeUI(isDarkMode);
+    });
+
+    // 시스템 다크 모드 변경 감지 (실시간 반영)
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+        if (localStorage.getItem("darkMode") === null) {
+            updateDarkModeUI(e.matches);
+        }
+    });
+
+    // 초기 설정 로드
+    loadDarkModeSetting();
+});
 
     // 갤러리1 모달 기능
     const galleryItems = document.querySelectorAll(".gallery-item img");
