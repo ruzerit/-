@@ -424,9 +424,9 @@ body {
     .gallery-container {
         background-color: #1a1a1a;
     }
+
     .gallery2-item {
-        flex: 1 1 50%;
-        height: auto;
+        flex: 1 1 calc(100vw / 2);
     }
 
     #gallery2Modal img,
