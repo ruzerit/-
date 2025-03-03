@@ -137,7 +137,7 @@ body {
     opacity: 0;
     align-items: center;
     justify-content: center;
-    background: none;
+    background: rgba(0, 0, 0, 0.9);
     transition: opacity 0.3s ease;
     z-index: 1000;
 }
@@ -167,7 +167,7 @@ body {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     max-height: 80vh;
-    background: none;
+    background: rgba(0, 0, 0, 0.9);
     align-items: center;
     justify-content: center;
     object-fit: contain;
