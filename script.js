@@ -100,8 +100,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 중앙 정렬 유지 함수
     function updateCenterImage() {
-        if (!galleryContainer || galleryItems.length === 0) return;
-
         let containerCenter = galleryContainer.clientWidth / 2;
         let closestIndex = 0;
         let closestDistance = Infinity;
@@ -116,28 +114,22 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        let selectedItem = galleryItems[closestIndex];
-        let targetScrollLeft = selectedItem.offsetLeft - containerCenter + selectedItem.offsetWidth / 2;
-
-        galleryContainer.scrollTo({
-            left: targetScrollLeft,
-            behavior: "smooth"
-        });
-
-        // ✅ 중앙에 온 이미지 강조 효과 추가
+        // ✅ 강조 효과 적용
         galleryItems.forEach((item, index) => {
             item.classList.toggle("active", index === closestIndex);
         });
+
+        // ✅ 자동 중앙 정렬
+        let selectedItem = galleryItems[closestIndex];
+        galleryContainer.scrollTo({
+            left: selectedItem.offsetLeft - containerCenter + selectedItem.offsetWidth / 2,
+            behavior: "smooth"
+        });
     }
 
-    // ✅ 갤러리 중앙 정렬 실행
-    requestAnimationFrame(updateCenterImage);
-
-    // ✅ 스크롤 시 중앙 정렬 업데이트
-    let scrollTimer;
-    galleryContainer.addEventListener("scroll", () => {
-        clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(updateCenterImage, 200);
+    galleryContainer.addEventListener("scroll", function () {
+        clearTimeout(window.scrollTimer);
+        window.scrollTimer = setTimeout(updateCenterImage, 100);
     });
 
     // ✅ 가로 슬라이드 기능 추가 (마우스 드래그)
