@@ -34,17 +34,11 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.style.visibility = "hidden";
     });
 
-    // ✅ 비디오 자동 재생 방지
-    const videoElement = document.querySelector("video");
-    if (videoElement) {
-        videoElement.removeAttribute("autoplay");
-        videoElement.pause();
-    }
-
-    // ✅ 갤러리2(.gallery2-item) 표시 & 클릭 이벤트 추가
     if (gallery2Images && gallery2Images.length > 0) {
         gallery2Images.forEach((img, index) => {
-            img.parentElement.classList.add("visible"); 
+            setTimeout(() => {
+                img.parentElement.classList.add("visible");
+            }, 500);
             img.addEventListener("click", () => openGallery2Modal(index)); 
         });
     }
@@ -55,17 +49,6 @@ document.addEventListener("DOMContentLoaded", function () {
             openGalleryModal(this);
         });
     });
-    // ✅ 다크 모드 설정
-    if (localStorage.getItem("darkMode") === "enabled") {
-        document.body.classList.add("dark-mode");
-    }
-
-    if (darkModeToggle) {
-        darkModeToggle.addEventListener("click", function () {
-            document.body.classList.toggle("dark-mode");
-            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
-        });
-    }
 
     // ✅ 모달 닫기 버튼 이벤트
     document.querySelectorAll(".modal .close").forEach((btn) => {
@@ -97,6 +80,24 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // ✅ 비디오 자동 재생 방지
+    const videoElement = document.querySelector("video");
+    if (videoElement) {
+        videoElement.removeAttribute("autoplay");
+        videoElement.pause();
+    }
+
+    // ✅ 다크 모드 설정
+    if (localStorage.getItem("darkMode") === "enabled") {
+        document.body.classList.add("dark-mode");
+    }
+
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener("click", function () {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
+        });
+    }
 
     // 초기 갤러리 정렬 실행
     requestAnimationFrame(() => {
