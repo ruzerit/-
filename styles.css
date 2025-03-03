@@ -394,6 +394,22 @@ body {
     .gallery-container {
         background-color: #1a1a1a;
     }
+    .gallery-wrapper {
+        padding: 5px 0; /* 상하 여백 최소화 */
+        gap: 5px; /* 이미지 간 간격 축소 */
+    }
+
+    .gallery-container {
+        
+
+    .gallery-item img {
+        width: 120px; /* 모바일에서 크기 조정 */
+        height: auto;
+    }
+
+    .gallery-item.highlight {
+        transform: scale(1.2); /* 모바일에서는 강조 효과 약간 감소 */
+    }
 }
 
 .dark-mode body {
