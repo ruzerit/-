@@ -3,8 +3,8 @@ let currentGalleryIndex = 0;
 let currentGallery2Index = 0;
 let isDown = false;
 let startX, startScrollLeft;
-let scrollTimer;
 
+// ✅ DOMContentLoaded 이벤트 리스너
 document.addEventListener("DOMContentLoaded", function () {
     // ✅ 요소 가져오기
     const galleryModal = document.getElementById("galleryModal");
@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const darkModeToggle = document.getElementById("darkModeToggle");
 
     const compCardBtn = document.getElementById("compCardBtn");
-    if (compCardBtn) compCardBtn.addEventListener("click", () => openModal("modalCompCard"));
-
     const videoCheckBtn = document.getElementById("videoCheckBtn");
+
+    if (compCardBtn) compCardBtn.addEventListener("click", () => openModal("modalCompCard"));
     if (videoCheckBtn) videoCheckBtn.addEventListener("click", () => openModal("modalVideoCheck"));
 
     // ✅ 갤러리1 클릭 이벤트 추가
@@ -38,58 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // ✅ 갤러리 중앙 정렬 유지
-    function updateCenterImage() {
-        if (!galleryContainer || galleryItems.length === 0) return;
-
-        let containerCenter = galleryContainer.clientWidth / 2;
-        let closestIndex = 0;
-        let closestDistance = Infinity;
-
-        galleryItems.forEach((item, index) => {
-            let itemCenter = item.offsetLeft + item.offsetWidth / 2 - galleryContainer.offsetLeft;
-            let distance = Math.abs(itemCenter - (galleryContainer.scrollLeft + containerCenter));
-
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestIndex = index;
-            }
-        });
-
-        let selectedItem = galleryItems[closestIndex];
-        let targetScrollLeft = selectedItem.offsetLeft - containerCenter + selectedItem.offsetWidth / 2;
-
-        galleryContainer.scrollTo({ left: targetScrollLeft, behavior: "smooth" });
-
-        // ✅ 중앙에 온 이미지 강조 효과 추가
-        galleryItems.forEach((item, index) => {
-            item.classList.toggle("active", index === closestIndex);
-        });
-    }
-
-    // ✅ 가로 슬라이드 기능 추가 (마우스 드래그 & 터치)
-    galleryContainer.addEventListener("mousedown", (e) => {
-        isDown = true;
-        startX = e.pageX - galleryContainer.offsetLeft;
-        startScrollLeft = galleryContainer.scrollLeft;
-        galleryContainer.style.cursor = "grabbing";
-    });
-
-    ["mouseleave", "mouseup"].forEach(event =>
-        galleryContainer.addEventListener(event, () => {
-            isDown = false;
-            galleryContainer.style.cursor = "grab";
-        })
-    );
-
-    galleryContainer.addEventListener("mousemove", (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        let x = e.pageX - galleryContainer.offsetLeft;
-        let walk = (x - startX) * 2;
-        galleryContainer.scrollLeft = startScrollLeft - walk;
-    });
-
     // ✅ 다크 모드 설정
     if (localStorage.getItem("darkMode") === "enabled") {
         document.body.classList.add("dark-mode");
@@ -101,11 +49,54 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.setItem("darkMode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
         });
     }
+
+    // ✅ 모달 외부 클릭 또는 ESC 키로 닫기
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("modal")) {
+            closeModal(event.target.id);
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closeModal("galleryModal");
+            closeModal("gallery2Modal");
+        } else if (event.key === "ArrowRight") {
+            changeGalleryImage(1, "next");
+        } else if (event.key === "ArrowLeft") {
+            changeGalleryImage(1, "prev");
+        }
+    });
+
+    // ✅ 갤러리1 가로 슬라이드 & 중앙 정렬
+    if (galleryContainer) {
+        galleryContainer.addEventListener("mousedown", (e) => {
+            isDown = true;
+            startX = e.pageX - galleryContainer.offsetLeft;
+            startScrollLeft = galleryContainer.scrollLeft;
+            galleryContainer.style.cursor = "grabbing";
+        });
+
+        ["mouseleave", "mouseup"].forEach(event =>
+            galleryContainer.addEventListener(event, () => {
+                isDown = false;
+                galleryContainer.style.cursor = "grab";
+            })
+        );
+
+        galleryContainer.addEventListener("mousemove", (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            let x = e.pageX - galleryContainer.offsetLeft;
+            let walk = (x - startX) * 2;
+            galleryContainer.scrollLeft = startScrollLeft - walk;
+        });
+    }
 });
 
 // ✅ 범용 모달 처리 함수 (열기 & 업데이트)
 function handleGalleryModal(galleryType, index = null) {
-    let modal, images, filenameElement;
+    let modal, images, filenameElement, modalImage;
 
     if (galleryType === 1) {
         modal = document.getElementById("galleryModal");
@@ -117,6 +108,10 @@ function handleGalleryModal(galleryType, index = null) {
     }
 
     if (!modal || images.length === 0) return;
+
+    // ✅ 모달 내 이미지 요소 찾기
+    modalImage = modal.querySelector("img");
+    if (!modalImage) return;
 
     // ✅ 새로 열린 경우 (index가 주어짐 → 모달 열기)
     if (index !== null) {
@@ -138,14 +133,13 @@ function handleGalleryModal(galleryType, index = null) {
     }
 
     // ✅ 이미지 업데이트
-    modal.querySelector("img").src = images[currentIndexVar].src;
+    modalImage.src = images[currentIndexVar].src;
 }
 
 // ✅ 범용 갤러리 이미지 변경 함수 (이전 & 다음)
 function changeGalleryImage(galleryType, direction) {
     let images, currentIndexVar;
 
-    // ✅ 갤러리 설정
     if (galleryType === 1) {
         images = document.querySelectorAll(".gallery-item img");
         currentIndexVar = currentGalleryIndex;
@@ -156,21 +150,18 @@ function changeGalleryImage(galleryType, direction) {
 
     if (images.length === 0) return;
 
-    // ✅ 방향에 따라 인덱스를 증가 또는 감소
     if (direction === "next") {
         currentIndexVar = (currentIndexVar + 1) % images.length;
     } else {
         currentIndexVar = (currentIndexVar - 1 + images.length) % images.length;
     }
 
-    // ✅ 현재 인덱스 업데이트
     if (galleryType === 1) {
         currentGalleryIndex = currentIndexVar;
     } else {
         currentGallery2Index = currentIndexVar;
     }
 
-    // ✅ 변경된 인덱스로 모달 업데이트
     handleGalleryModal(galleryType);
 }
 
