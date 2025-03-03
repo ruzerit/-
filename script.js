@@ -1,149 +1,97 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // ✅ 1. 모달 열기 & 닫기 기능
-    function setupModal(triggerSelector, modalSelector) {
-        const trigger = document.querySelector(triggerSelector);
-        const modal = document.querySelector(modalSelector);
+    // Comp Card & Video Check 모달 기능
+    function setupModal(triggerId, modalId) {
+        const trigger = document.getElementById(triggerId);
+        const modal = document.getElementById(modalId);
         const closeBtn = modal.querySelector(".close");
 
-        if (!trigger || !modal || !closeBtn) return;
-
-        trigger.addEventListener("click", function () {
-            modal.style.display = "block";
+        trigger.addEventListener("click", () => {
+            modal.style.display = "flex";
         });
 
-        closeBtn.addEventListener("click", function () {
+        closeBtn.addEventListener("click", () => {
             modal.style.display = "none";
         });
 
-        window.addEventListener("click", function (event) {
+        window.addEventListener("click", (event) => {
             if (event.target === modal) {
                 modal.style.display = "none";
             }
         });
-
-        window.addEventListener("keydown", function (event) {
-            if (event.key === "Escape") {
-                modal.style.display = "none";
-            }
-        });
     }
 
-    setupModal("#compCardBtn", "#modalCompCard");
-    setupModal("#videoCheckBtn", "#modalVideoCheck");
+    setupModal("compCardBtn", "modalCompCard");
+    setupModal("videoCheckBtn", "modalVideoCheck");
 
-    // ✅ 2. 갤러리1 - 가로 슬라이드 & 중앙 강조 효과
-    const galleryContainer = document.querySelector(".gallery-container");
-    const galleryItems = document.querySelectorAll(".gallery-item");
-
-    if (galleryContainer && galleryItems.length) {
-        let isDown = false;
-        let startX, scrollLeft;
-
-        // 가로 스크롤 드래그 기능
-        galleryContainer.addEventListener("mousedown", (e) => {
-            isDown = true;
-            startX = e.pageX - galleryContainer.offsetLeft;
-            scrollLeft = galleryContainer.scrollLeft;
-        });
-
-        galleryContainer.addEventListener("mouseleave", () => isDown = false);
-        galleryContainer.addEventListener("mouseup", () => isDown = false);
-
-        galleryContainer.addEventListener("mousemove", (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - galleryContainer.offsetLeft;
-            const walk = (x - startX) * 2;
-            galleryContainer.scrollLeft = scrollLeft - walk;
-        });
-
-        // 중앙 강조 효과
-        function highlightCenterImage() {
-            const centerX = galleryContainer.clientWidth / 2;
-            let closestItem = null;
-            let minDistance = Infinity;
-
-            galleryItems.forEach((item) => {
-                const itemX = item.getBoundingClientRect().left + item.clientWidth / 2;
-                const distance = Math.abs(centerX - itemX);
-
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestItem = item;
-                }
-            });
-
-            galleryItems.forEach(item => item.classList.remove("highlight"));
-            if (closestItem) closestItem.classList.add("highlight");
-        }
-
-        galleryContainer.addEventListener("scroll", highlightCenterImage);
-        highlightCenterImage();
-    }
-
-    // ✅ 3. 갤러리1 모달 기능 (이미지 클릭 시 확대)
+    // 갤러리1 모달 기능
+    const galleryItems = document.querySelectorAll(".gallery-item img");
     const galleryModal = document.getElementById("galleryModal");
     const galleryImage = document.getElementById("galleryImage");
+    const closeGalleryModal = galleryModal.querySelector(".close");
 
-    if (galleryModal && galleryImage) {
-        galleryItems.forEach(item => {
-            item.addEventListener("click", function () {
-                galleryImage.src = this.querySelector("img").src;
-                galleryModal.style.display = "block";
-            });
+    galleryItems.forEach((img) => {
+        img.addEventListener("click", () => {
+            galleryImage.src = img.src;
+            galleryModal.style.display = "flex";
         });
+    });
 
-        galleryModal.querySelector(".close").addEventListener("click", function () {
+    closeGalleryModal.addEventListener("click", () => {
+        galleryModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === galleryModal) {
             galleryModal.style.display = "none";
-        });
-
-        window.addEventListener("click", function (event) {
-            if (event.target === galleryModal) {
-                galleryModal.style.display = "none";
-            }
-        });
-
-        window.addEventListener("keydown", function (event) {
-            if (event.key === "Escape") {
-                galleryModal.style.display = "none";
-            }
-        });
-    }
-
-    // ✅ 4. 다크 모드 기능 추가 (자동 감지 & 사용자 설정 유지)
-    const darkModeToggle = document.createElement("button");
-    darkModeToggle.id = "darkModeToggle";
-    document.body.appendChild(darkModeToggle);
-
-    function updateDarkModeUI(isDark) {
-        document.body.classList.toggle("dark-mode", isDark);
-        darkModeToggle.textContent = isDark ? "☀️ 라이트 모드" : "🌙 다크 모드";
-        localStorage.setItem("darkMode", isDark);
-    }
-
-    function detectSystemDarkMode() {
-        return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    }
-
-    function loadDarkModeSetting() {
-        const savedDarkMode = localStorage.getItem("darkMode");
-        if (savedDarkMode === null) {
-            updateDarkModeUI(detectSystemDarkMode());
-        } else {
-            updateDarkModeUI(savedDarkMode === "true");
-        }
-    }
-
-    darkModeToggle.addEventListener("click", function () {
-        const isDarkMode = !document.body.classList.contains("dark-mode");
-        updateDarkModeUI(isDarkMode);
-    });
-
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-        if (localStorage.getItem("darkMode") === null) {
-            updateDarkModeUI(e.matches);
         }
     });
 
-    loadDarkModeSetting();
+    // 갤러리2 모달 기능 (슬라이드 포함)
+    const gallery2Items = document.querySelectorAll(".gallery2-item img");
+    const gallery2Modal = document.getElementById("gallery2Modal");
+    const gallery2Image = document.getElementById("gallery2Image");
+    const gallery2Filename = document.getElementById("gallery2Filename");
+    const closeGallery2Modal = gallery2Modal.querySelector(".close");
+    const prevBtn = document.getElementById("prevGallery2Btn");
+    const nextBtn = document.getElementById("nextGallery2Btn");
+
+    let currentIndex = 0;
+
+    function updateGallery2Image(index) {
+        const img = gallery2Items[index];
+        gallery2Image.src = img.src;
+        gallery2Filename.textContent = img.alt;
+    }
+
+    gallery2Items.forEach((img, index) => {
+        img.addEventListener("click", () => {
+            currentIndex = index;
+            updateGallery2Image(currentIndex);
+            gallery2Modal.style.display = "flex";
+        });
+    });
+
+    prevBtn.addEventListener("click", () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateGallery2Image(currentIndex);
+        }
+    });
+
+    nextBtn.addEventListener("click", () => {
+        if (currentIndex < gallery2Items.length - 1) {
+            currentIndex++;
+            updateGallery2Image(currentIndex);
+        }
+    });
+
+    closeGallery2Modal.addEventListener("click", () => {
+        gallery2Modal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === gallery2Modal) {
+            gallery2Modal.style.display = "none";
+        }
+    });
 });
