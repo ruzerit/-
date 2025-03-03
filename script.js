@@ -1,4 +1,3 @@
-
 // ✅ 전역 변수 선언
 let currentGalleryIndex = 0;
 let currentGallery2Index = 0;
