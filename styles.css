@@ -45,6 +45,49 @@ body {
     object-fit: cover;
 }
 
+.cover h1 {
+    font-size: 32px;
+    font-weight: 300;
+    color: #fff;
+    margin-bottom: 15px;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s ease, transform 0.2s ease-in-out, box-shadow 0.3s ease;
+    background: rgba(255, 255, 255, 0.3); /* 어두운 배경 */
+    color: #fff;
+    border: none;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover, .cover .btn:hover {
+    transform: scale(1.05);
+}
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); 
+}
+
+.cover .btn {
+    background: rgba(255, 255, 255, 0.3); /* 어두운 배경 */
+    color: #fff;
+}
+
+.cover .btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
 /* ✅ 갤러리 컨테이너 (가로 슬라이드) */
 .gallery-container {
     display: flex;
