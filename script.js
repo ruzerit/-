@@ -1,34 +1,56 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ JavaScript 실행됨"); // 콘솔 확인용
+    console.log("✅ JavaScript 실행됨"); // 확인용
 
     // ✅ 요소 가져오기
-    const galleryItems = document.querySelectorAll(".gallery-item img");
-    const galleryModal = document.getElementById("galleryModal");
-    const galleryImage = document.getElementById("galleryImage");
-    const closeModalBtn = document.querySelector(".modal .close");
+    const compCardBtn = document.getElementById("compCardBtn");
+    const videoCheckBtn = document.getElementById("videoCheckBtn");
 
-    // ✅ 갤러리 이미지 클릭 시 모달 열기
-    galleryItems.forEach((img) => {
-        img.addEventListener("click", function () {
-            console.log("✅ 이미지 클릭됨", img.src); // 콘솔 확인용
-            galleryImage.src = img.src;
-            galleryModal.style.display = "flex";
-        });
-    });
+    const modalCompCard = document.getElementById("modalCompCard");
+    const modalVideoCheck = document.getElementById("modalVideoCheck");
 
-    // ✅ 모달 닫기 버튼 클릭 시 모달 닫기
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener("click", function () {
-            console.log("✅ 모달 닫기 버튼 클릭됨"); // 콘솔 확인용
-            galleryModal.style.display = "none";
+    const closeButtons = document.querySelectorAll(".modal .close");
+
+    // ✅ 컴카드 버튼 클릭 시 모달 열기
+    if (compCardBtn && modalCompCard) {
+        compCardBtn.addEventListener("click", function () {
+            console.log("✅ Comp Card 버튼 클릭됨");
+            modalCompCard.style.display = "flex";
         });
     }
 
-    // ✅ ESC 키로 모달 닫기
+    // ✅ 비디오 체크 버튼 클릭 시 모달 열기
+    if (videoCheckBtn && modalVideoCheck) {
+        videoCheckBtn.addEventListener("click", function () {
+            console.log("✅ Video Check 버튼 클릭됨");
+            modalVideoCheck.style.display = "flex";
+        });
+    }
+
+    // ✅ 닫기 버튼 클릭 시 해당 모달 닫기
+    closeButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            console.log("✅ 모달 닫기 버튼 클릭됨");
+            this.closest(".modal").style.display = "none";
+        });
+    });
+
+    // ✅ ESC 키를 누르면 모든 모달 닫기
     document.addEventListener("keydown", function (event) {
         if (event.key === "Escape") {
-            console.log("✅ ESC 키 눌림 - 모달 닫힘"); // 콘솔 확인용
-            galleryModal.style.display = "none";
+            console.log("✅ ESC 키 눌림 - 모든 모달 닫기");
+            document.querySelectorAll(".modal").forEach(modal => {
+                modal.style.display = "none";
+            });
         }
+    });
+
+    // ✅ 모달 바깥을 클릭하면 닫기
+    document.addEventListener("click", function (event) {
+        document.querySelectorAll(".modal").forEach(modal => {
+            if (event.target === modal) {
+                console.log("✅ 모달 바깥 클릭됨 - 모달 닫기");
+                modal.style.display = "none";
+            }
+        });
     });
 });
