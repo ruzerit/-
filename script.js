@@ -19,24 +19,39 @@ document.addEventListener("DOMContentLoaded", function () {
     const gallery2Modal = document.getElementById("gallery2Modal");
     const gallery2Image = document.getElementById("gallery2Image");
 
+    // ✅ 모달 열기/닫기 헬퍼 함수
+    function openModal(modal) {
+        if (modal) {
+            modal.style.display = "flex";
+            setTimeout(() => modal.classList.add("show"), 10);
+            document.body.classList.add("modal-open");
+        }
+    }
+
+    function closeModal(modal) {
+        if (modal) {
+            modal.classList.remove("show");
+            setTimeout(() => {
+                if (!modal.classList.contains("show")) {
+                    modal.style.display = "none";
+                }
+            }, 300);
+            document.body.classList.remove("modal-open");
+        }
+    }
+
     // ✅ 비디오 모달 열기
     function openVideoModal() {
         closeGalleryModal();
         closeCompCardModal();
-        if (modalVideoCheck) {
-            modalVideoCheck.classList.add("show");
-            document.body.classList.add("modal-open");
-            if (videoElement) videoElement.play();
-        }
+        openModal(modalVideoCheck);
+        if (videoElement) videoElement.play();
     }
 
     // ✅ 비디오 모달 닫기
     function closeVideoModal() {
-        if (modalVideoCheck) {
-            modalVideoCheck.classList.remove("show");
-            document.body.classList.remove("modal-open");
-            if (videoElement) videoElement.pause();
-        }
+        closeModal(modalVideoCheck);
+        if (videoElement) videoElement.pause();
     }
 
     // ✅ 컴카드 모달 열기
@@ -45,18 +60,12 @@ document.addEventListener("DOMContentLoaded", function () {
         closeVideoModal();
         currentCompCardIndex = 0;
         if (compCardImage) compCardImage.src = compCardImages[currentCompCardIndex];
-        if (modalCompCard) {
-            modalCompCard.classList.add("show");
-            document.body.classList.add("modal-open");
-        }
+        openModal(modalCompCard);
     }
 
     // ✅ 컴카드 모달 닫기
     function closeCompCardModal() {
-        if (modalCompCard) {
-            modalCompCard.classList.remove("show");
-            document.body.classList.remove("modal-open");
-        }
+        closeModal(modalCompCard);
     }
 
     // ✅ 컴카드 모달에서 다음/이전 이미지
@@ -87,7 +96,13 @@ document.addEventListener("DOMContentLoaded", function () {
         if (closestItem) closestItem.classList.add("active");
     }
 
+    // ✅ 가로 슬라이드 기능 추가
     galleryContainer.addEventListener("scroll", updateActiveImage);
+    galleryContainer.addEventListener("wheel", function (event) {
+        event.preventDefault();
+        galleryContainer.scrollLeft += event.deltaY;
+    });
+
     updateActiveImage();
 
     // ✅ 갤러리 1: 클릭하면 모달창 열기 & 다음 사진 보기
@@ -95,14 +110,17 @@ document.addEventListener("DOMContentLoaded", function () {
         closeCompCardModal();
         closeVideoModal();
         galleryIndex = index;
-        galleryImage.src = galleryItems[galleryIndex].querySelector("img").src;
-        galleryModal.classList.add("show");
-        document.body.classList.add("modal-open");
+        if (galleryItems[galleryIndex]) {
+            galleryImage.src = galleryItems[galleryIndex].querySelector("img").src;
+            openModal(galleryModal);
+        }
     }
 
     function changeGalleryImage(direction) {
         galleryIndex = (galleryIndex + direction + galleryItems.length) % galleryItems.length;
-        galleryImage.src = galleryItems[galleryIndex].querySelector("img").src;
+        if (galleryItems[galleryIndex]) {
+            galleryImage.src = galleryItems[galleryIndex].querySelector("img").src;
+        }
     }
 
     galleryItems.forEach((item, index) => {
@@ -129,14 +147,17 @@ document.addEventListener("DOMContentLoaded", function () {
         closeCompCardModal();
         closeVideoModal();
         gallery2Index = index;
-        gallery2Image.src = gallery2Items[gallery2Index].querySelector("img").src;
-        gallery2Modal.classList.add("show");
-        document.body.classList.add("modal-open");
+        if (gallery2Items[gallery2Index]) {
+            gallery2Image.src = gallery2Items[gallery2Index].querySelector("img").src;
+            openModal(gallery2Modal);
+        }
     }
 
     function changeGallery2Image(direction) {
         gallery2Index = (gallery2Index + direction + gallery2Items.length) % gallery2Items.length;
-        gallery2Image.src = gallery2Items[gallery2Index].querySelector("img").src;
+        if (gallery2Items[gallery2Index]) {
+            gallery2Image.src = gallery2Items[gallery2Index].querySelector("img").src;
+        }
     }
 
     gallery2Items.forEach((item, index) => {
