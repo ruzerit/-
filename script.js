@@ -36,14 +36,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     modal.style.display = "none";
                 }
             }, 300);
-            document.body.classList.remove("modal-open");
+            document.body.classList.remove("modal-open"); // 스크롤 복구
         }
     }
 
     // ✅ 비디오 모달 열기
     function openVideoModal() {
-        closeGalleryModal();
-        closeCompCardModal();
+        closeModal(galleryModal);
+        closeModal(modalCompCard);
         openModal(modalVideoCheck);
         if (videoElement) videoElement.play();
     }
@@ -56,8 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 컴카드 모달 열기
     function openCompCardModal() {
-        closeGalleryModal();
-        closeVideoModal();
+        closeModal(galleryModal);
+        closeModal(modalVideoCheck);
         currentCompCardIndex = 0;
         if (compCardImage) compCardImage.src = compCardImages[currentCompCardIndex];
         openModal(modalCompCard);
@@ -107,8 +107,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 갤러리 1: 클릭하면 모달창 열기 & 다음 사진 보기
     function openGalleryModal(index) {
-        closeCompCardModal();
-        closeVideoModal();
+        closeModal(modalCompCard);
+        closeModal(modalVideoCheck);
         galleryIndex = index;
         if (galleryItems[galleryIndex]) {
             galleryImage.src = galleryItems[galleryIndex].querySelector("img").src;
@@ -144,8 +144,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 갤러리 2: 클릭하면 모달창 열기 & 다음 사진 보기
     function openGallery2Modal(index) {
-        closeCompCardModal();
-        closeVideoModal();
+        closeModal(modalCompCard);
+        closeModal(modalVideoCheck);
         gallery2Index = index;
         if (gallery2Items[gallery2Index]) {
             gallery2Image.src = gallery2Items[gallery2Index].querySelector("img").src;
@@ -167,36 +167,20 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ ESC 키를 누르면 열린 모달 닫기
     document.addEventListener("keydown", function (event) {
         if (event.key === "Escape") {
-            closeCompCardModal();
-            closeGalleryModal();
-            closeGallery2Modal();
-            closeVideoModal();
+            closeModal(modalCompCard);
+            closeModal(galleryModal);
+            closeModal(gallery2Modal);
+            closeModal(modalVideoCheck);
         }
     });
 
     // ✅ 닫기 버튼 이벤트 연결
     document.querySelectorAll(".modal .close").forEach((closeBtn) => {
         closeBtn.addEventListener("click", function () {
-            closeCompCardModal();
-            closeGalleryModal();
-            closeGallery2Modal();
-            closeVideoModal();
+            closeModal(modalCompCard);
+            closeModal(galleryModal);
+            closeModal(gallery2Modal);
+            closeModal(modalVideoCheck);
         });
     });
-
-    // ✅ 모달 바깥 클릭 시 닫기
-    document.querySelectorAll(".modal").forEach((modal) => {
-        modal.addEventListener("click", function (event) {
-            if (event.target === modal) {
-                closeCompCardModal();
-                closeGalleryModal();
-                closeGallery2Modal();
-                closeVideoModal();
-            }
-        });
-    });
-
-    // ✅ 버튼 이벤트 추가
-    if (compCardBtn) compCardBtn.addEventListener("click", openCompCardModal);
-    if (videoCheckBtn) videoCheckBtn.addEventListener("click", openVideoModal);
 });
