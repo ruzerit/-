@@ -65,121 +65,122 @@
         </div>
     </section>   
 
-<div id="modalCompCard" class="modal" role="dialog">
-    <div class="modal-content">
-       <button class="close" aria-label="모달 닫기">&times;</button>
-       <img src="compcard1.jpg" alt="Comp Card">
-       <img src="compcard2.jpg" alt="Comp Card">
+    <div id="modalCompCard" class="modal" role="dialog">
+      <div class="modal-content">
+        <button class="close" aria-label="모달 닫기">&times;</button>
+        <button onclick="changeCompCardImage(-1)">‹</button>
+        <img id="compCardImage" src="compcard1.jpg" alt="Comp Card">
+        <button onclick="changeCompCardImage(1)">›</button>
+      </div>
     </div>
-</div>
-<div id="modalVideoCheck" class="modal" role="dialog">
-    <div class="modal-content">
-       <button class="close" aria-label="모달 닫기">&times;</button>
-       <video controls>
-           <source src="video.MP4" type="video/mp4">
-       </video>
-    </div>
-</div> 
+
+    <div id="modalVideoCheck" class="modal" role="dialog">
+        <div class="modal-content">
+           <button class="close" aria-label="모달 닫기">&times;</button>
+           <video controls>
+               <source src="video.MP4" type="video/mp4">
+           </video>
+        </div>
+    </div> 
 
     <!-- ✅ 2. 갤러리1 -->
+    <div class="modal" id="galleryModal">
+        <span class="close" aria-label="모달 닫기">&times;</span>
+        <img id="galleryImage" src="" alt="Gallery View">
+    </div>
+
     <section class="gallery">
         <div class="gallery-wrapper">
             <div class="gallery-container">
                 <div class="gallery-item">
-                    <img src="photo1.jpg" alt="Portfolio Image" data-modal="true">
+                   <img src="photo1.jpg" alt="Portfolio Image 1" loading="lazy" onclick="openGalleryModal('photo1.jpg')">
                 </div>
                 <div class="gallery-item">
-                    <img src="photo2.jpg" alt="Portfolio Image" data-modal="true">
+                   <img src="photo2.jpg" alt="Portfolio Image 2" loading="lazy" onclick="openGalleryModal('photo2.jpg')">
                 </div>
                 <div class="gallery-item">
-                    <img src="photo3.jpg" alt="Portfolio Image" data-modal="true">
+                   <img src="photo3.jpg" alt="Portfolio Image 3" loading="lazy" onclick="openGalleryModal('photo3.jpg')">
                 </div>
                 <div class="gallery-item">
-                    <img src="photo4.jpg" alt="Portfolio Image" data-modal="true">
+                   <img src="photo4.jpg" alt="Portfolio Image 4" loading="lazy" onclick="openGalleryModal('photo4.jpg')">
                 </div>
                 <div class="gallery-item">
-                    <img src="photo5.jpg" alt="Portfolio Image" data-modal="true">
+                   <img src="photo5.jpg" alt="Portfolio Image 5" loading="lazy" onclick="openGalleryModal('photo5.jpg')">
                 </div>
                 <div class="gallery-item">
-                    <img src="photo6.jpg" alt="Portfolio Image" data-modal="true">
+                   <img src="photo6.jpg" alt="Portfolio Image 6" loading="lazy" onclick="openGalleryModal('photo6.jpg')">
                 </div>
                 <div class="gallery-item">
-                    <img src="photo7.jpg" alt="Portfolio Image" data-modal="true">
+                   <img src="photo7.jpg" alt="Portfolio Image 7" loading="lazy" onclick="openGalleryModal('photo7.jpg')">
                 </div>
                 <div class="gallery-item">
-                    <img src="photo8.jpg" alt="Portfolio Image" data-modal="true">
+                   <img src="photo8.jpg" alt="Portfolio Image 8" loading="lazy" onclick="openGalleryModal('photo8.jpg')">
                 </div>
                 <div class="gallery-item">
-                    <img src="photo9.jpg" alt="Portfolio Image" data-modal="true">
+                   <img src="photo9.jpg" alt="Portfolio Image 9" loading="lazy" onclick="openGalleryModal('photo9.jpg')">
+                </div>
+                <div class="gallery-item">
+                   <img src="photo10.jpg" alt="Portfolio Image 10" loading="lazy" onclick="openGalleryModal('photo10.jpg')">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ✅ 갤러리1 모달 -->
-    <div class="modal" id="galleryModal">
-       <div class="modal-content">
-           <button class="close" aria-label="모달 닫기">&times;</button>
-           <img id="galleryImage" src="" alt="Gallery Image">
-       </div>
-    </div>
 
     <!-- ✅ 3. 키 & 3사이즈 정보 -->
     <section class="model-info">
         <p>Height: 173.5cm | Bust: 30 | Waist: 22 | Hips: 33 | Shoes: 245/37</p>
     </section>
 
-
     <!-- ✅ 갤러리2 섹션 -->
-    <section class="gallery2-container">
-        <div class="gallery2-item">
-            <img src="image1.jpg" alt="9999 ARCHIVE 2025 SS LOOKBOOK" loading="lazy">
-        </div>
-        <div class="gallery2-item">
-            <img src="image2.jpg" alt="9999 ARCHIVE 2025 SS LOOKBOOK" loading="lazy">
-         </div>
-         <div class="gallery2-item">
-             <img src="image3.JPG" alt="9999 ARCHIVE 2025 SS LOOKBOOK" loading="lazy">
-         </div>
-         <div class="gallery2-item">
-             <img src="image4.jpg" alt="9999 ARCHIVE 2025 SS LOOKBOOK" loading="lazy">
-         </div>
-         <div class="gallery2-item">
-             <img src="image5.JPG" alt="9999 ARCHIVE 2025 SS LOOKBOOK" loading="lazy">
-         </div>
-         <div class="gallery2-item">
-             <img src="image6.JPG" alt="GEEK CHIC LOOK 2024" loading="lazy">
-         </div>
-         <div class="gallery2-item">
-             <img src="image7.JPG" alt="9999 ARCHIVE 2025 SS LOOKBOOK" loading="lazy">
-         </div>
-         <div class="gallery2-item">
-             <img src="image8.JPG" alt="GEEK CHIC LOOK 2024" loading="lazy">
-         </div>
-         <div class="gallery2-item">
-             <img src="image9.JPG" alt="Autumn Outdoor Photoshoot at Hangang Park" loading="lazy">
-         </div>
-         <div class="gallery2-item">
-             <img src="image10.jpg" alt="Autumn Outdoor Photoshoot at Hangang Park" loading="lazy">
-         </div>
-         <div class="gallery2-item">
-             <img src="image11.JPG" alt="Autumn Outdoor Photoshoot at Hangang Park" loading="lazy">
-         </div>
-         <div class="gallery2-item">
-             <img src="image12.jpg" alt="Autumn Outdoor Photoshoot at Dongjak Bridge" loading="lazy">
-         </div>
-    </section>
-
- 
     <div class="modal" id="gallery2Modal">
        <div class="modal-content">
-           <button class="close" aria-label="모달 닫기">&times;</button>
-           <button id="prevGallery2Btn" class="prev">&#10094;</button>
-           <button id="nextGallery2Btn" class="next">&#10095;</button>
+           <span class="close" aria-label="모달 닫기">&times;</span>
+           <button id="prevGallery2Btn" onclick="changeGallery2Image(-1)">&#10094;</button>
+           <button id="nextGallery2Btn" onclick="changeGallery2Image(1)">&#10095;</button>
            <img id="gallery2Image" src="" alt="Gallery View">
            <p id="gallery2Filename"></p>
        </div>
     </div>
+
+    <section class="gallery2-container">
+        <div class="gallery2-item">
+            <img src="image1.jpg" alt="SS25 SpringGlow" loading="lazy" onclick="openGallery2Modal('image1.jpg')">
+        </div>
+        <div class="gallery2-item">
+            <img src="image2.jpg" alt="SS25 SpringGlow" loading="lazy" onclick="openGallery2Modal('image2.jpg')">
+         </div>
+         <div class="gallery2-item">
+             <img src="image3.JPG" alt="9999 ARCHIVE 2025 SS LOOKBOOK" loading="lazy" onclick="openGallery2Modal('image3.JPG')">
+         </div>
+         <div class="gallery2-item">
+             <img src="image4.jpg" alt="9999 ARCHIVE 2025 SS LOOKBOOK" loading="lazy" onclick="openGallery2Modal('image4.jpg')">
+         </div>
+         <div class="gallery2-item">
+             <img src="image5.JPG" alt="9999 ARCHIVE 2025 SS LOOKBOOK" loading="lazy" onclick="openGallery2Modal('image5.JPG')">
+         </div>
+         <div class="gallery2-item">
+             <img src="image6.JPG" alt="GEEK CHIC LOOK 2024" loading="lazy" onclick="openGallery2Modal('image6.JPG')">
+         </div>
+         <div class="gallery2-item">
+             <img src="image7.JPG" alt="9999 ARCHIVE 2025 SS LOOKBOOK" loading="lazy" onclick="openGallery2Modal('image7.JPG')">
+         </div>
+         <div class="gallery2-item">
+             <img src="image8.JPG" alt="GEEK CHIC LOOK 2024" loading="lazy" onclick="openGallery2Modal('image8.JPG')">
+         </div>
+         <div class="gallery2-item">
+             <img src="image9.JPG" alt="Autumn Outdoor Photoshoot at Hangang Park" loading="lazy" onclick="openGallery2Modal('image9.JPG')">
+         </div>
+         <div class="gallery2-item">
+             <img src="image10.jpg" alt="Autumn Outdoor Photoshoot at Hangang Park" loading="lazy" onclick="openGallery2Modal('image10.jpg')">
+         </div>
+         <div class="gallery2-item">
+             <img src="image11.JPG" alt="Autumn Outdoor Photoshoot at Hangang Park" loading="lazy" onclick="openGallery2Modal('image11.JPG')">
+         </div>
+         <div class="gallery2-item">
+             <img src="image12.jpg" alt="Autumn Outdoor Photoshoot at Dongjak Bridge" loading="lazy" onclick="openGallery2Modal('image12.jpg')">
+         </div>
+    </section>
 
     <!-- ✅ 5. 컨택 (연락처 & SNS 정보) -->
     <section class="contact">

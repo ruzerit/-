@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let galleryIndex = 0;
     let gallery2Index = 0;
 
+
     // ✅ 요소 선택
     const compCardBtn = document.getElementById("compCardBtn");
     const videoCheckBtn = document.getElementById("videoCheckBtn");
@@ -18,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const gallery2Items = document.querySelectorAll(".gallery2-item");
     const gallery2Modal = document.getElementById("gallery2Modal");
     const gallery2Image = document.getElementById("gallery2Image");
+    const gallery2Filename = document.getElementById("gallery2Filename");
 
     // ✅ 모달 열기/닫기 헬퍼 함수
     function openModal(modal) {
@@ -106,14 +108,13 @@ document.addEventListener("DOMContentLoaded", function () {
     updateActiveImage();
 
     // ✅ 갤러리 1: 클릭하면 모달창 열기 & 다음 사진 보기
-    function openGalleryModal(index) {
-        closeModal(modalCompCard);
-        closeModal(modalVideoCheck);
-        galleryIndex = index;
-        if (galleryItems[galleryIndex]) {
-            galleryImage.src = galleryItems[galleryIndex].querySelector("img").src;
-            openModal(galleryModal);
-        }
+    function openGalleryModal(src) {
+        const modal = document.getElementById("galleryModal");
+        const img = document.getElementById("galleryImage");
+        img.src = src;
+        modal.style.display = "flex";
+        setTimeout(() => modal.classList.add("show"), 10);
+        document.body.classList.add("modal-open");
     }
 
     function changeGalleryImage(direction) {
@@ -123,45 +124,58 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    galleryItems.forEach((item, index) => {
-        item.addEventListener("click", () => openGalleryModal(index));
-    });
+    // ✅ 갤러리 2: 클릭하면 모달창 열기 & 다음 사진 보기
+    function openGallery2Modal(src) {
+        // index 계산 (src 기준으로 찾아냄)
+        gallery2Index = Array.from(gallery2Items).findIndex(item =>
+            item.querySelector("img")?.src.includes(src)
+        );
+
+        if (gallery2Index === -1) return;
+
+        const modal = gallery2Modal;
+        const img = gallery2Image;
+        const filenameDisplay = gallery2Filename;
+
+        const clickedItem = gallery2Items[gallery2Index].querySelector("img");
+        img.src = clickedItem.src;
+        filenameDisplay.textContent = clickedItem.alt || clickedItem.src.split('/').pop();
+
+        modal.style.display = "flex";
+        setTimeout(() => modal.classList.add("show"), 10);
+        document.body.classList.add("modal-open");
+    }
+
+    // ✅ 갤러리 2: 다음 / 이전 이미지 보기
+    function changeGallery2Image(direction) {
+        gallery2Index = (gallery2Index + direction + gallery2Items.length) % gallery2Items.length;
+        const newItem = gallery2Items[gallery2Index].querySelector("img");
+        if (!newItem) return;
+    
+        gallery2Image.src = newItem.src;
+        gallery2Filename.textContent = newItem.alt || newItem.src.split('/').pop();
+    }
 
     // ✅ 갤러리 2: 아래에서 위로 등장 애니메이션
     function revealGallery2Items() {
-        let windowHeight = window.innerHeight;
-
+        const windowHeight = window.innerHeight;
         gallery2Items.forEach((item) => {
-            let itemTop = item.getBoundingClientRect().top;
-            if (itemTop < windowHeight - 50) {
+            if (item.getBoundingClientRect().top < windowHeight - 50) {
                 item.classList.add("visible");
             }
         });
     }
-
     window.addEventListener("scroll", revealGallery2Items);
     revealGallery2Items();
 
-    // ✅ 갤러리 2: 클릭하면 모달창 열기 & 다음 사진 보기
-    function openGallery2Modal(index) {
-        closeModal(modalCompCard);
-        closeModal(modalVideoCheck);
-        gallery2Index = index;
-        if (gallery2Items[gallery2Index]) {
-            gallery2Image.src = gallery2Items[gallery2Index].querySelector("img").src;
-            openModal(gallery2Modal);
+    // ✅ 갤러리 2 이미지 클릭 이벤트 연결
+    gallery2Items.forEach((item) => {
+        const img = item.querySelector("img");
+        if (img) {
+            img.addEventListener("click", () => {
+                openGallery2Modal(img.src);
+            });
         }
-    }
-
-    function changeGallery2Image(direction) {
-        gallery2Index = (gallery2Index + direction + gallery2Items.length) % gallery2Items.length;
-        if (gallery2Items[gallery2Index]) {
-            gallery2Image.src = gallery2Items[gallery2Index].querySelector("img").src;
-        }
-    }
-
-    gallery2Items.forEach((item, index) => {
-        item.addEventListener("click", () => openGallery2Modal(index));
     });
 
     // ✅ ESC 키를 누르면 열린 모달 닫기
@@ -171,6 +185,11 @@ document.addEventListener("DOMContentLoaded", function () {
             closeModal(galleryModal);
             closeModal(gallery2Modal);
             closeModal(modalVideoCheck);
+        }
+
+        if (gallery2Modal.classList.contains("show")) {
+            if (event.key === "ArrowLeft") changeGallery2Image(-1);
+            if (event.key === "ArrowRight") changeGallery2Image(1);
         }
     });
 
