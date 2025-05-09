@@ -1,5 +1,3 @@
-
-
 document.addEventListener("DOMContentLoaded", function () {
     let compCardImages = ["compcard1.jpg", "compcard2.jpg"];
     let currentCompCardIndex = 0;
@@ -11,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const videoCheckBtn = document.getElementById("videoCheckBtn");
     const modalCompCard = document.getElementById("modalCompCard");
     const modalVideoCheck = document.getElementById("modalVideoCheck");
-    const compCardImage = modalCompCard?.querySelector("img");
+    const compCardImage = document.getElementById("compCardImage");
     const videoElement = modalVideoCheck?.querySelector("video");
     const galleryModal = document.getElementById("galleryModal");
     const galleryImage = document.getElementById("galleryImage");
@@ -22,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const gallery2Image = document.getElementById("gallery2Image");
     const gallery2Filename = document.getElementById("gallery2Filename");
 
-    // ✅ 모달 열기/닫기 헬퍼 함수
+    // ✅ 모달 열기/닫기
     function openModal(modal) {
         if (modal) {
             modal.style.display = "flex";
@@ -41,7 +39,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ✅ 비디오 모달 열기
+    // ✅ 버튼 클릭 이벤트 연결 (누락 보완)
+    compCardBtn?.addEventListener("click", openCompCardModal);
+    videoCheckBtn?.addEventListener("click", openVideoModal);
+
     function openVideoModal() {
         closeModal(galleryModal);
         closeModal(modalCompCard);
@@ -49,13 +50,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (videoElement) videoElement.play().catch(() => {});
     }
 
-    // ✅ 비디오 모달 닫기
     function closeVideoModal() {
         closeModal(modalVideoCheck);
         if (videoElement) videoElement.pause();
     }
 
-    // ✅ 컴카드 모달 열기
     function openCompCardModal() {
         closeModal(galleryModal);
         closeModal(modalVideoCheck);
@@ -64,19 +63,17 @@ document.addEventListener("DOMContentLoaded", function () {
         openModal(modalCompCard);
     }
 
-    // ✅ 컴카드 모달 닫기
     function closeCompCardModal() {
         closeModal(modalCompCard);
     }
 
-    // ✅ 컴카드 모달에서 다음/이전 이미지
     function changeCompCardImage(direction) {
         if (!compCardImages.length || !compCardImage) return;
         currentCompCardIndex = (currentCompCardIndex + direction + compCardImages.length) % compCardImages.length;
         compCardImage.src = compCardImages[currentCompCardIndex];
     }
 
-    // ✅ 갤러리 1: Lazy Load (IntersectionObserver)
+    // ✅ 갤러리1 Lazy Load
     const gallery1Images = document.querySelectorAll('.gallery-container .gallery-item img');
     const gallery1Observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
@@ -91,13 +88,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
     gallery1Images.forEach(img => {
-        if (!img.dataset.src) img.dataset.src = img.src;
-        img.src = '';
-        gallery1Observer.observe(img);
+        const originalSrc = img.dataset.src || img.src;
+        if (originalSrc) {
+            img.src = '';
+            img.dataset.src = originalSrc;
+            gallery1Observer.observe(img);
+        }
     });
 
-    // ✅ 갤러리 1: 중앙 강조
+    // ✅ 갤러리1 중심 강조
     function updateActiveImage() {
         const center = galleryContainer.clientWidth / 2;
         let closestItem = null;
@@ -115,21 +116,21 @@ document.addEventListener("DOMContentLoaded", function () {
         if (closestItem) closestItem.classList.add("active");
     }
 
-    galleryContainer.addEventListener("scroll", updateActiveImage);
-    galleryContainer.addEventListener("wheel", function (event) {
+    galleryContainer?.addEventListener("scroll", updateActiveImage);
+    galleryContainer?.addEventListener("wheel", function (event) {
         event.preventDefault();
         galleryContainer.scrollLeft += event.deltaY;
     }, { passive: false });
     updateActiveImage();
 
-    // ✅ 갤러리 1: 모달 열기
     function openGalleryModal(src) {
-        const modal = document.getElementById("galleryModal");
-        const img = document.getElementById("galleryImage");
-        img.src = src;
-        modal.style.display = "flex";
-        setTimeout(() => modal.classList.add("show"), 10);
-        document.body.classList.add("modal-open");
+        galleryIndex = Array.from(galleryItems).findIndex(item => {
+            const img = item.querySelector("img");
+            return img && img.src.includes(src);
+        });
+        if (galleryIndex === -1) return;
+        galleryImage.src = galleryItems[galleryIndex].querySelector("img").src;
+        openModal(galleryModal);
     }
 
     function changeGalleryImage(direction) {
@@ -139,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ✅ 갤러리 2: Lazy Load
+    // ✅ 갤러리2 Lazy Load
     const lazyImages = document.querySelectorAll('.gallery2-item img');
     const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
@@ -154,27 +155,27 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
     lazyImages.forEach(img => {
-        if (!img.dataset.src) img.dataset.src = img.src;
-        img.src = '';
-        observer.observe(img);
+        const originalSrc = img.dataset.src || img.src;
+        if (originalSrc) {
+            img.src = '';
+            img.dataset.src = originalSrc;
+            observer.observe(img);
+        }
     });
 
-    // ✅ 갤러리 2: 모달 열기
+    // ✅ 갤러리2 모달
     function openGallery2Modal(src) {
         gallery2Index = Array.from(gallery2Items).findIndex(item =>
             item.querySelector("img")?.src.includes(src)
         );
         if (gallery2Index === -1) return;
-        const modal = gallery2Modal;
-        const img = gallery2Image;
-        const filenameDisplay = gallery2Filename;
         const clickedItem = gallery2Items[gallery2Index].querySelector("img");
-        img.src = clickedItem.src;
-        filenameDisplay.textContent = clickedItem.alt || clickedItem.src.split('/').pop();
-        modal.style.display = "flex";
-        setTimeout(() => modal.classList.add("show"), 10);
-        document.body.classList.add("modal-open");
+        if (!clickedItem) return;
+        gallery2Image.src = clickedItem.src;
+        gallery2Filename.textContent = clickedItem.alt || clickedItem.src.split('/').pop();
+        openModal(gallery2Modal);
     }
 
     function changeGallery2Image(direction) {
@@ -185,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
         gallery2Filename.textContent = newItem.alt || newItem.src.split('/').pop();
     }
 
-    // ✅ 갤러리 2: 등장 애니메이션
+    // ✅ 갤러리2 등장 애니메이션
     function revealGallery2Items() {
         const windowHeight = window.innerHeight;
         gallery2Items.forEach((item) => {
@@ -194,10 +195,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
     window.addEventListener("scroll", revealGallery2Items);
     revealGallery2Items();
 
-    // ✅ 갤러리 2: 클릭 이벤트 연결
+    // ✅ 갤러리2 클릭 이벤트 연결
     gallery2Items.forEach((item) => {
         const img = item.querySelector("img");
         if (img) {
@@ -207,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // ✅ ESC 키로 모달 닫기
+    // ✅ ESC 및 화살표 키 이벤트
     document.addEventListener("keydown", function (event) {
         if (event.key === "Escape") {
             closeModal(modalCompCard);
@@ -215,9 +217,13 @@ document.addEventListener("DOMContentLoaded", function () {
             closeModal(gallery2Modal);
             closeModal(modalVideoCheck);
         }
-        if (gallery2Modal.classList.contains("show")) {
+        if (gallery2Modal?.classList.contains("show")) {
             if (event.key === "ArrowLeft") changeGallery2Image(-1);
             if (event.key === "ArrowRight") changeGallery2Image(1);
+        }
+        if (galleryModal?.classList.contains("show")) {
+            if (event.key === "ArrowLeft") changeGalleryImage(-1);
+            if (event.key === "ArrowRight") changeGalleryImage(1);
         }
     });
 
@@ -231,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // ✅ 전역 접근 함수 등록
+    // ✅ 전역 함수 등록
     window.changeCompCardImage = changeCompCardImage;
     window.openGalleryModal = openGalleryModal;
     window.changeGallery2Image = changeGallery2Image;
