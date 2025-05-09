@@ -77,34 +77,57 @@ document.addEventListener("DOMContentLoaded", function () {
         compCardImage.src = compCardImages[currentCompCardIndex];
     }
 
-    // ✅ 갤러리 1: 중앙 강조 & 가로 슬라이드
-    function updateActiveImage() {
-        let center = galleryContainer.clientWidth / 2;
-        let closestItem = null;
-        let closestDistance = Infinity;
+    // ✅ 갤러리 1: Lazy Load (IntersectionObserver)
+    const gallery1Images = document.querySelectorAll('.gallery-container .gallery-item img');
 
-        galleryItems.forEach((item) => {
-            let rect = item.getBoundingClientRect();
-            let itemCenter = rect.left + rect.width / 2;
-            let distance = Math.abs(center - itemCenter);
-
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestItem = item;
-            }
-        });
-
-        galleryItems.forEach((item) => item.classList.remove("active"));
-        if (closestItem) closestItem.classList.add("active");
-    }
-
-    // ✅ 가로 슬라이드 기능 추가
-    galleryContainer.addEventListener("scroll", updateActiveImage);
-    galleryContainer.addEventListener("wheel", function (event) {
-        event.preventDefault();
-        galleryContainer.scrollLeft += event.deltaY;
+    const gallery1Observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          const src = img.dataset.src;
+          if (src) {
+            img.src = src;
+            img.removeAttribute('data-src');
+          }
+          obs.unobserve(img);
+        }
+      });
     });
 
+    gallery1Images.forEach(img => {
+      img.dataset.src = img.dataset.src || img.src;
+      img.src = ''; // 초기엔 비움
+      gallery1Observer.observe(img);
+    });
+
+    // ✅ 갤러리 1: 중앙 강조
+    function updateActiveImage() {
+      const center = galleryContainer.clientWidth / 2;
+      let closestItem = null;
+      let closestDistance = Infinity;
+    
+      galleryItems.forEach((item) => {
+        const rect = item.getBoundingClientRect();
+        const itemCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(center - itemCenter);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestItem = item;
+        }
+      });
+
+      galleryItems.forEach((item) => item.classList.remove("active"));
+      if (closestItem) closestItem.classList.add("active");
+    }
+
+    // ✅ 갤러리 1: 가로 스크롤 이벤트 처리
+    galleryContainer.addEventListener("scroll", updateActiveImage);
+    galleryContainer.addEventListener("wheel", function (event) {
+      event.preventDefault();
+      galleryContainer.scrollLeft += event.deltaY;
+    }, { passive: false });
+    
     updateActiveImage();
 
     // ✅ 갤러리 1: 클릭하면 모달창 열기 & 다음 사진 보기
@@ -168,6 +191,28 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener("scroll", revealGallery2Items);
     revealGallery2Items();
 
+    const lazyImages = document.querySelectorAll('.gallery2-item img');
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          const src = img.dataset.src;
+          if (src) {
+            img.src = src;
+            img.removeAttribute('data-src');
+          }
+          obs.unobserve(img);
+        }
+      });
+    });
+
+    lazyImages.forEach(img => {
+      img.dataset.src = img.src;
+      img.src = ''; // 초기엔 비워두고
+      observer.observe(img);
+    });
+
     // ✅ 갤러리 2 이미지 클릭 이벤트 연결
     gallery2Items.forEach((item) => {
         const img = item.querySelector("img");
@@ -202,4 +247,11 @@ document.addEventListener("DOMContentLoaded", function () {
             closeModal(modalVideoCheck);
         });
     });
-});
+
+    // ✅ 전역 접근용 함수 등록
+    window.changeCompCardImage = changeCompCardImage;
+    window.openGalleryModal = openGalleryModal;
+    window.changeGallery2Image = changeGallery2Image;
+    window.openGallery2Modal = openGallery2Modal;
+
+}); // ← DOMContentLoaded 끝
